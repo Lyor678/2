@@ -3,178 +3,229 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FlixAI</title>
+  <title>FlixAI — Découvrez les IA du futur</title>
   <style>
-    :root {font-family: Inter, system-ui, sans-serif;}
+    :root {
+      font-family: "Poppins", system-ui, sans-serif;
+      --bg-dark: #0b0f1a;
+      --accent: #38bdf8;
+      --card-bg: rgba(255,255,255,0.05);
+    }
+
     body {
-      margin:0;
-      padding:0;
-      background:linear-gradient(180deg,#0f172a,#1e293b);
-      color:#f1f5f9;
-      min-height:100vh;
-      overflow-x:hidden;
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at top left, #0f172a 0%, #0b0f1a 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- FOND ANIMÉ --- */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(600px at 10% 20%, rgba(56,189,248,0.15), transparent),
+                  radial-gradient(800px at 90% 80%, rgba(168,85,247,0.1), transparent);
+      animation: gradientShift 8s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 0%, 100% 100%; }
+      100% { background-position: 100% 100%, 0% 0%; }
     }
 
     header {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:12px;
-      padding:16px 24px;
-      background:#0f172a;
-      box-shadow:0 4px 10px rgba(0,0,0,0.6);
-      position:relative;
-      z-index:10;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      background: rgba(15,23,42,0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 10;
     }
 
     h1 {
-      margin:0;
-      font-size:32px;
-      font-weight:700;
-      color:#38bdf8;
-      letter-spacing:1px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin: 0;
+      text-shadow: 0 0 12px rgba(56,189,248,0.6);
     }
 
-    /* Icône hamburger */
+    /* --- MENU LATÉRAL --- */
     .menu-btn {
-      position:absolute;
-      left:20px;
-      background:none;
-      border:none;
-      cursor:pointer;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      width:26px;
-      height:18px;
-      padding:0;
+      position: absolute;
+      left: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      z-index: 20;
     }
+
     .menu-btn span {
-      display:block;
-      height:3px;
-      width:100%;
-      background:#38bdf8;
-      border-radius:3px;
-      transition:all .3s ease;
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: all .3s ease;
     }
+
     .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(8px);}
     .menu-btn.active span:nth-child(2){opacity:0;}
     .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-8px);}
 
-    /* Menu latéral */
     .sidebar {
-      position:fixed;
-      top:0;
-      left:-280px;
-      width:260px;
-      height:100%;
-      background:#0f172a;
-      box-shadow:4px 0 15px rgba(0,0,0,0.5);
-      transition:left .4s ease;
-      padding-top:70px;
-      z-index:9;
-      overflow-y:auto;
+      position: fixed;
+      top: 0; left: -300px;
+      width: 260px;
+      height: 100%;
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.7);
+      transition: left .4s ease;
+      z-index: 15;
+      padding-top: 80px;
     }
-    .sidebar.open {left:0;}
+
+    .sidebar.open { left: 0; }
+
     .sidebar h2 {
-      font-size:18px;
-      color:#38bdf8;
-      margin:10px 24px;
-      border-bottom:1px solid #334155;
-      padding-bottom:6px;
+      font-size: 18px;
+      color: var(--accent);
+      margin: 10px 24px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 6px;
     }
-    .sidebar ul {list-style:none;padding:0;margin:0;}
+
+    .sidebar ul { list-style:none; padding:0; margin:0; }
     .sidebar li {
       padding:10px 24px;
       cursor:pointer;
-      color:#f1f5f9;
+      color:#e2e8f0;
       border-left:4px solid transparent;
       transition:all .3s ease;
     }
     .sidebar li:hover {
-      background:#1e293b;
-      border-left:4px solid #38bdf8;
-      color:#38bdf8;
+      background:rgba(56,189,248,0.1);
+      border-left:4px solid var(--accent);
+      color:var(--accent);
     }
 
+    /* --- OVERLAY QUAND MENU OUVERT --- */
+    .overlay {
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.5);
+      backdrop-filter:blur(2px);
+      opacity:0; visibility:hidden;
+      transition:opacity .4s ease;
+      z-index:5;
+    }
+    .overlay.active {opacity:1; visibility:visible;}
+
+    main {
+      margin-top: 90px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* --- CARTES --- */
     .grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:24px;
-      margin:30px auto;
-      max-width:1400px;
-      padding:0 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      margin: 40px auto;
+      max-width: 1400px;
+      padding: 0 24px;
     }
 
     .card {
-      background:#1e293b;
-      border-radius:16px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.6);
-      overflow:hidden;
-      cursor:pointer;
-      transition:transform .3s ease, box-shadow .3s ease;
-      display:flex;
-      flex-direction:column;
+      background: var(--card-bg);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      transform: translateY(0);
+      transition: transform .4s ease, box-shadow .4s ease, backdrop-filter .4s ease;
+      backdrop-filter: blur(10px);
     }
     .card:hover {
-      transform:translateY(-8px) scale(1.03);
-      box-shadow:0 12px 28px rgba(0,0,0,0.8);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(56,189,248,0.3);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     .card-header {
-      padding:20px;
-      border-bottom:1px solid #334155;
-      background:linear-gradient(135deg,#0f172a,#1e293b);
+      padding: 18px;
     }
-    .card-title {font-size:20px;font-weight:600;color:#f8fafc;margin:0;}
-    .card-meta {font-size:13px;color:#94a3b8;margin-top:6px;}
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #f8fafc;
+      margin: 0;
+    }
+    .card-meta {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
 
     .card-body {
-      padding:18px;
-      font-size:14px;
-      color:#e2e8f0;
-      display:none;
-      animation:fadeIn .4s ease;
+      padding: 0 18px 14px;
+      font-size: 14px;
+      color: #e2e8f0;
     }
-
-    .card-tags {
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      padding:12px 18px;
-    }
-    .tag {
-      background:#334155;
-      color:#f1f5f9;
-      font-size:12px;
-      padding:4px 10px;
-      border-radius:12px;
-      cursor:pointer;
-      transition:all .3s ease;
-    }
-    .tag:hover {background:#38bdf8;color:#0f172a;}
 
     .card-footer {
-      padding:14px 18px;
-      background:#0f172a;
-      font-size:14px;
-      color:#38bdf8;
-      text-decoration:none;
-      transition:color .3s;
+      padding: 12px 18px;
+      background: rgba(56,189,248,0.08);
+      color: var(--accent);
+      text-decoration: none;
+      display: block;
+      font-weight: 500;
+      text-align: center;
+      transition: background .3s ease;
     }
-    .card-footer:hover {color:#0ea5e9;}
+    .card-footer:hover { background: rgba(56,189,248,0.2); }
 
     footer {
-      margin:40px 0;
-      color:#94a3b8;
-      font-size:13px;
-      text-align:center;
+      text-align: center;
+      font-size: 14px;
+      color: #94a3b8;
+      padding: 30px 0 40px;
     }
 
-    @keyframes fadeIn {from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);}}
+    @keyframes fadeIn {
+      from {opacity:0;transform:translateY(10px);}
+      to {opacity:1;transform:translateY(0);}
+    }
   </style>
 </head>
 <body>
+  <div class="overlay" id="overlay"></div>
+
   <header>
     <button class="menu-btn" id="menuBtn">
       <span></span><span></span><span></span>
@@ -192,14 +243,15 @@
   </main>
 
   <footer>
-    <div>FlixAI — Explorez toutes les IA par catégories ✨</div>
+    <div>FlixAI — Découvrez et explorez toutes les IA ✨</div>
   </footer>
 
   <script>
-    const grid = document.getElementById('grid');
-    const sidebar = document.getElementById('sidebar');
-    const categoryList = document.getElementById('categoryList');
     const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const grid = document.getElementById('grid');
+    const categoryList = document.getElementById('categoryList');
 
     const categories = [
       "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
@@ -214,19 +266,24 @@
     ];
 
     let allData = [];
-    let activeCategory = 'Tous';
+    let activeCategory = "Tous";
 
-    // Toggle menu
-    menuBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-      menuBtn.classList.toggle('active');
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+      overlay.classList.toggle("active");
+      menuBtn.classList.toggle("active");
     });
 
-    // Chargement des IA
-    window.addEventListener('DOMContentLoaded', async () => {
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      menuBtn.classList.remove("active");
+    });
+
+    window.addEventListener("DOMContentLoaded", async () => {
       try {
-        const res = await fetch('data.json');
-        if (!res.ok) throw new Error('Impossible de charger data.json');
+        const res = await fetch("data.json");
+        if (!res.ok) throw new Error("Impossible de charger data.json");
         const data = await res.json();
         allData = Array.isArray(data) ? data : [data];
         renderCategories();
@@ -236,105 +293,91 @@
       }
     });
 
-    function renderCategories(){
-      categoryList.innerHTML = '';
-      const allLi = document.createElement('li');
-      allLi.textContent = 'Toutes les catégories';
-      allLi.addEventListener('click', () => {
-        activeCategory = 'Tous';
+    function renderCategories() {
+      categoryList.innerHTML = "";
+      const allLi = document.createElement("li");
+      allLi.textContent = "Toutes les catégories";
+      allLi.addEventListener("click", () => {
+        activeCategory = "Tous";
         filterAndRender();
-        sidebar.classList.remove('open');
-        menuBtn.classList.remove('active');
+        closeMenu();
       });
       categoryList.appendChild(allLi);
 
       categories.forEach(cat => {
-        if (allData.some(item => (item.description||'').toLowerCase().includes(cat.toLowerCase()))) {
-          const li = document.createElement('li');
+        if (allData.some(item => (item.description || "").toLowerCase().includes(cat.toLowerCase()))) {
+          const li = document.createElement("li");
           li.textContent = cat;
-          li.addEventListener('click', () => {
+          li.addEventListener("click", () => {
             activeCategory = cat;
             filterAndRender();
-            sidebar.classList.remove('open');
-            menuBtn.classList.remove('active');
+            closeMenu();
           });
           categoryList.appendChild(li);
         }
       });
     }
 
-    function filterAndRender(){
+    function closeMenu() {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      menuBtn.classList.remove("active");
+    }
+
+    function filterAndRender() {
       let filtered = [...allData];
-      if (activeCategory !== 'Tous'){
+      if (activeCategory !== "Tous") {
         filtered = filtered.filter(item =>
-          (item.description||'').toLowerCase().includes(activeCategory.toLowerCase())
+          (item.description || "").toLowerCase().includes(activeCategory.toLowerCase())
         );
       }
       showCards(filtered);
     }
 
-    function showError(err){
+    function showError(err) {
       grid.innerHTML = `<div style="color:#f87171;font-weight:700">Erreur: ${escapeHtml(err.message || err)}</div>`;
     }
 
-    function showCards(data){
-      grid.innerHTML = '';
+    function showCards(data) {
+      grid.innerHTML = "";
       data.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card';
+        const card = document.createElement("div");
+        card.className = "card";
 
-        const header = document.createElement('div');
-        header.className = 'card-header';
-        header.innerHTML = `<h3 class="card-title">${escapeHtml(item.handle || 'Sans nom')}</h3>
-                            <div class="card-meta">ID: ${escapeHtml(item.id || '?')}</div>`;
+        const img = document.createElement("img");
+        img.src = item.image || "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80";
+        img.alt = item.handle || "image IA";
 
-        const body = document.createElement('div');
-        body.className = 'card-body';
-        body.textContent = item.description || '(pas de description)';
+        const header = document.createElement("div");
+        header.className = "card-header";
+        header.innerHTML = `<h3 class="card-title">${escapeHtml(item.handle || "Sans nom")}</h3>
+                            <div class="card-meta">${escapeHtml(item.id || "?")}</div>`;
 
-        const tagsDiv = document.createElement('div');
-        tagsDiv.className = 'card-tags';
-        categories.forEach(cat => {
-          if ((item.description||'').toLowerCase().includes(cat.toLowerCase())) {
-            const tag = document.createElement('span');
-            tag.className = 'tag';
-            tag.textContent = cat;
-            tag.addEventListener('click', e => {
-              e.stopPropagation();
-              activeCategory = cat;
-              filterAndRender();
-            });
-            tagsDiv.appendChild(tag);
-          }
-        });
+        const body = document.createElement("div");
+        body.className = "card-body";
+        body.textContent = item.description || "(Pas de description)";
 
-        const footer = document.createElement('a');
-        footer.className = 'card-footer';
-        footer.href = item.website || '#';
-        footer.target = '_blank';
-        footer.rel = 'noopener noreferrer';
-        footer.textContent = item.website || 'Aucun site';
+        const footer = document.createElement("a");
+        footer.className = "card-footer";
+        footer.href = item.website || "#";
+        footer.target = "_blank";
+        footer.textContent = "Visiter le site";
 
+        card.appendChild(img);
         card.appendChild(header);
         card.appendChild(body);
-        card.appendChild(tagsDiv);
         card.appendChild(footer);
-
-        card.addEventListener('click', () => {
-          const isVisible = body.style.display === 'block';
-          body.style.display = isVisible ? 'none' : 'block';
-        });
 
         grid.appendChild(card);
       });
     }
 
-    function escapeHtml(s){
+    function escapeHtml(s) {
       return String(s)
-        .replace(/&/g,'&amp;')
-        .replace(/</g,'&lt;')
-        .replace(/>/g,'&gt;')
-        .replace(/"/g,'&quot;');
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
     }
   </script>
 </body>
