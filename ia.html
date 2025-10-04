@@ -8,28 +8,97 @@
     :root {font-family: Inter, system-ui, sans-serif;}
     body {margin:0;padding:0;background:linear-gradient(180deg,#0f172a,#1e293b);color:#f1f5f9;min-height:100vh;}
 
-    header {text-align:center;padding:24px 16px;background:#0f172a;box-shadow:0 4px 10px rgba(0,0,0,0.6);}
+    header {
+      text-align:center;
+      padding:24px 16px;
+      background:#0f172a;
+      box-shadow:0 4px 10px rgba(0,0,0,0.6);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+    }
     h1 {margin:0;font-size:36px;font-weight:700;color:#38bdf8;letter-spacing:1px;}
 
-    .categories {display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px auto;max-width:1000px;}
-    .cat-btn {background:#1e293b;border:1px solid #334155;padding:8px 14px;border-radius:30px;font-size:14px;cursor:pointer;transition:all .3s ease;}
-    .cat-btn:hover {background:#334155;}
-    .cat-btn.active {background:#38bdf8;color:#0f172a;font-weight:600;}
+    select {
+      background:#1e293b;
+      color:#f1f5f9;
+      border:1px solid #334155;
+      padding:10px 16px;
+      border-radius:12px;
+      font-size:15px;
+      cursor:pointer;
+      transition:all .3s ease;
+      min-width:240px;
+    }
+    select:hover {background:#334155;}
+    select:focus {outline:none;border-color:#38bdf8;}
 
-    .grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:24px;margin:30px auto;max-width:1400px;padding:0 16px;}
-    .card {background:#1e293b;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,0.6);overflow:hidden;cursor:pointer;transition:transform .3s ease, box-shadow .3s ease;display:flex;flex-direction:column;}
-    .card:hover {transform:translateY(-8px) scale(1.03);box-shadow:0 12px 28px rgba(0,0,0,0.8)}
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:24px;
+      margin:30px auto;
+      max-width:1400px;
+      padding:0 16px;
+    }
 
-    .card-header {padding:20px;border-bottom:1px solid #334155;background:linear-gradient(135deg,#0f172a,#1e293b)}
+    .card {
+      background:#1e293b;
+      border-radius:16px;
+      box-shadow:0 6px 18px rgba(0,0,0,0.6);
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform .3s ease, box-shadow .3s ease;
+      display:flex;
+      flex-direction:column;
+    }
+    .card:hover {
+      transform:translateY(-8px) scale(1.03);
+      box-shadow:0 12px 28px rgba(0,0,0,0.8);
+    }
+
+    .card-header {
+      padding:20px;
+      border-bottom:1px solid #334155;
+      background:linear-gradient(135deg,#0f172a,#1e293b)
+    }
     .card-title {font-size:20px;font-weight:600;color:#f8fafc;margin:0}
     .card-meta {font-size:13px;color:#94a3b8;margin-top:6px}
 
-    .card-body {padding:18px;font-size:14px;color:#e2e8f0;display:none;animation:fadeIn .4s ease}
-    .card-tags {display:flex;flex-wrap:wrap;gap:6px;padding:12px 18px;}
-    .tag {background:#334155;color:#f1f5f9;font-size:12px;padding:4px 10px;border-radius:12px;cursor:pointer;transition:all .3s ease;}
+    .card-body {
+      padding:18px;
+      font-size:14px;
+      color:#e2e8f0;
+      display:none;
+      animation:fadeIn .4s ease
+    }
+
+    .card-tags {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      padding:12px 18px;
+    }
+    .tag {
+      background:#334155;
+      color:#f1f5f9;
+      font-size:12px;
+      padding:4px 10px;
+      border-radius:12px;
+      cursor:pointer;
+      transition:all .3s ease;
+    }
     .tag:hover {background:#38bdf8;color:#0f172a;}
 
-    .card-footer {padding:14px 18px;background:#0f172a;font-size:14px;color:#38bdf8;text-decoration:none;transition:color .3s}
+    .card-footer {
+      padding:14px 18px;
+      background:#0f172a;
+      font-size:14px;
+      color:#38bdf8;
+      text-decoration:none;
+      transition:color .3s
+    }
     .card-footer:hover {color:#0ea5e9}
 
     footer {margin:40px 0;color:#94a3b8;font-size:13px;text-align:center}
@@ -40,7 +109,9 @@
 <body>
   <header>
     <h1>FlixAI</h1>
-    <div id="categories" class="categories"></div>
+    <select id="categorySelect">
+      <option value="Tous">Toutes les catégories</option>
+    </select>
   </header>
 
   <main>
@@ -53,8 +124,20 @@
 
   <script>
     const grid = document.getElementById('grid');
-    const categoriesDiv = document.getElementById('categories');
-    const keywords = ["ia","business","chatbot","texte","audio","vidéo","3d","photo","marketing","éducation","santé","finance","musique","traduction","data","design","image","voix","code"];
+    const categorySelect = document.getElementById('categorySelect');
+
+    // ✅ Nouvelle liste de catégories
+    const categories = [
+      "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
+      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
+      "Logo Design","Web Mockup","Photo Editing","Art Concept","Video Editing","Talking Avatar","Dubbing",
+      "Text-to-Video","Video Upscale","Voice Generation","Voice Cloning","Audio Mixing","Audio Transcription",
+      "Podcast Creation","Article Writing","Scriptwriting","Text Summarization","Text Correction","Creative Writing",
+      "Code Assistance","Automated Testing","Website Creation","Documentation","Cybersecurity","Dynamic Pricing",
+      "Sales Forecasting","Inventory Management","Customer Support","Product Recommendation","Course Creation",
+      "Personal Tutor","Quiz & Test","Student Performance","Accounting","Financial Forecasting","Fraud Detection",
+      "Automated Trading","Investment Management"
+    ];
 
     let allData = [];
     let activeCategory = 'Tous';
@@ -74,35 +157,26 @@
     });
 
     function renderCategories(){
-      categoriesDiv.innerHTML = '';
-      const allBtn = createCategoryButton('Tous');
-      allBtn.classList.add('active');
-      categoriesDiv.appendChild(allBtn);
-
-      keywords.forEach(k => {
-        if (allData.some(item => (item.description||'').toLowerCase().includes(k))) {
-          categoriesDiv.appendChild(createCategoryButton(k));
-        }
+      // Remplir le menu déroulant
+      categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
       });
-    }
 
-    function createCategoryButton(name){
-      const btn = document.createElement('button');
-      btn.className = 'cat-btn';
-      btn.textContent = name;
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        activeCategory = name;
+      categorySelect.addEventListener('change', () => {
+        activeCategory = categorySelect.value;
         filterAndRender();
       });
-      return btn;
     }
 
     function filterAndRender(){
       let filtered = [...allData];
       if (activeCategory !== 'Tous'){
-        filtered = filtered.filter(item => (item.description||'').toLowerCase().includes(activeCategory.toLowerCase()));
+        filtered = filtered.filter(item =>
+          (item.description || '').toLowerCase().includes(activeCategory.toLowerCase())
+        );
       }
       showCards(filtered);
     }
@@ -128,15 +202,15 @@
 
         const tagsDiv = document.createElement('div');
         tagsDiv.className = 'card-tags';
-        keywords.forEach(k => {
-          if ((item.description||'').toLowerCase().includes(k)){
+        categories.forEach(cat => {
+          if ((item.description || '').toLowerCase().includes(cat.toLowerCase())) {
             const tag = document.createElement('span');
             tag.className = 'tag';
-            tag.textContent = k;
+            tag.textContent = cat;
             tag.addEventListener('click', e => {
               e.stopPropagation();
-              document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-              activeCategory = k;
+              categorySelect.value = cat;
+              activeCategory = cat;
               filterAndRender();
             });
             tagsDiv.appendChild(tag);
