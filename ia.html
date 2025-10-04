@@ -6,33 +6,96 @@
   <title>FlixAI</title>
   <style>
     :root {font-family: Inter, system-ui, sans-serif;}
-    body {margin:0;padding:0;background:linear-gradient(180deg,#0f172a,#1e293b);color:#f1f5f9;min-height:100vh;}
+    body {
+      margin:0;
+      padding:0;
+      background:linear-gradient(180deg,#0f172a,#1e293b);
+      color:#f1f5f9;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
 
     header {
-      text-align:center;
-      padding:24px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      padding:16px 24px;
       background:#0f172a;
       box-shadow:0 4px 10px rgba(0,0,0,0.6);
+      position:relative;
+      z-index:10;
+    }
+
+    h1 {
+      margin:0;
+      font-size:32px;
+      font-weight:700;
+      color:#38bdf8;
+      letter-spacing:1px;
+    }
+
+    /* Icône hamburger */
+    .menu-btn {
+      position:absolute;
+      left:20px;
+      background:none;
+      border:none;
+      cursor:pointer;
       display:flex;
       flex-direction:column;
-      align-items:center;
-      gap:12px;
+      justify-content:space-between;
+      width:26px;
+      height:18px;
+      padding:0;
     }
-    h1 {margin:0;font-size:36px;font-weight:700;color:#38bdf8;letter-spacing:1px;}
-
-    select {
-      background:#1e293b;
-      color:#f1f5f9;
-      border:1px solid #334155;
-      padding:10px 16px;
-      border-radius:12px;
-      font-size:15px;
-      cursor:pointer;
+    .menu-btn span {
+      display:block;
+      height:3px;
+      width:100%;
+      background:#38bdf8;
+      border-radius:3px;
       transition:all .3s ease;
-      min-width:240px;
     }
-    select:hover {background:#334155;}
-    select:focus {outline:none;border-color:#38bdf8;}
+    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(8px);}
+    .menu-btn.active span:nth-child(2){opacity:0;}
+    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-8px);}
+
+    /* Menu latéral */
+    .sidebar {
+      position:fixed;
+      top:0;
+      left:-280px;
+      width:260px;
+      height:100%;
+      background:#0f172a;
+      box-shadow:4px 0 15px rgba(0,0,0,0.5);
+      transition:left .4s ease;
+      padding-top:70px;
+      z-index:9;
+      overflow-y:auto;
+    }
+    .sidebar.open {left:0;}
+    .sidebar h2 {
+      font-size:18px;
+      color:#38bdf8;
+      margin:10px 24px;
+      border-bottom:1px solid #334155;
+      padding-bottom:6px;
+    }
+    .sidebar ul {list-style:none;padding:0;margin:0;}
+    .sidebar li {
+      padding:10px 24px;
+      cursor:pointer;
+      color:#f1f5f9;
+      border-left:4px solid transparent;
+      transition:all .3s ease;
+    }
+    .sidebar li:hover {
+      background:#1e293b;
+      border-left:4px solid #38bdf8;
+      color:#38bdf8;
+    }
 
     .grid {
       display:grid;
@@ -61,17 +124,17 @@
     .card-header {
       padding:20px;
       border-bottom:1px solid #334155;
-      background:linear-gradient(135deg,#0f172a,#1e293b)
+      background:linear-gradient(135deg,#0f172a,#1e293b);
     }
-    .card-title {font-size:20px;font-weight:600;color:#f8fafc;margin:0}
-    .card-meta {font-size:13px;color:#94a3b8;margin-top:6px}
+    .card-title {font-size:20px;font-weight:600;color:#f8fafc;margin:0;}
+    .card-meta {font-size:13px;color:#94a3b8;margin-top:6px;}
 
     .card-body {
       padding:18px;
       font-size:14px;
       color:#e2e8f0;
       display:none;
-      animation:fadeIn .4s ease
+      animation:fadeIn .4s ease;
     }
 
     .card-tags {
@@ -97,22 +160,32 @@
       font-size:14px;
       color:#38bdf8;
       text-decoration:none;
-      transition:color .3s
+      transition:color .3s;
     }
-    .card-footer:hover {color:#0ea5e9}
+    .card-footer:hover {color:#0ea5e9;}
 
-    footer {margin:40px 0;color:#94a3b8;font-size:13px;text-align:center}
+    footer {
+      margin:40px 0;
+      color:#94a3b8;
+      font-size:13px;
+      text-align:center;
+    }
 
-    @keyframes fadeIn {from {opacity:0;transform:translateY(10px)}to {opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn {from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);}}
   </style>
 </head>
 <body>
   <header>
+    <button class="menu-btn" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
     <h1>FlixAI</h1>
-    <select id="categorySelect">
-      <option value="Tous">Toutes les catégories</option>
-    </select>
   </header>
+
+  <nav class="sidebar" id="sidebar">
+    <h2>Catégories</h2>
+    <ul id="categoryList"></ul>
+  </nav>
 
   <main>
     <div id="grid" class="grid"></div>
@@ -124,9 +197,10 @@
 
   <script>
     const grid = document.getElementById('grid');
-    const categorySelect = document.getElementById('categorySelect');
+    const sidebar = document.getElementById('sidebar');
+    const categoryList = document.getElementById('categoryList');
+    const menuBtn = document.getElementById('menuBtn');
 
-    // ✅ Nouvelle liste de catégories
     const categories = [
       "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
       "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
@@ -142,11 +216,17 @@
     let allData = [];
     let activeCategory = 'Tous';
 
-    // Chargement automatique du fichier data.json
+    // Toggle menu
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      menuBtn.classList.toggle('active');
+    });
+
+    // Chargement des IA
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const res = await fetch('data.json');
-        if (!res.ok) throw new Error('Impossible de charger data.json. Code: ' + res.status);
+        if (!res.ok) throw new Error('Impossible de charger data.json');
         const data = await res.json();
         allData = Array.isArray(data) ? data : [data];
         renderCategories();
@@ -157,17 +237,29 @@
     });
 
     function renderCategories(){
-      // Remplir le menu déroulant
-      categories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        categorySelect.appendChild(option);
-      });
-
-      categorySelect.addEventListener('change', () => {
-        activeCategory = categorySelect.value;
+      categoryList.innerHTML = '';
+      const allLi = document.createElement('li');
+      allLi.textContent = 'Toutes les catégories';
+      allLi.addEventListener('click', () => {
+        activeCategory = 'Tous';
         filterAndRender();
+        sidebar.classList.remove('open');
+        menuBtn.classList.remove('active');
+      });
+      categoryList.appendChild(allLi);
+
+      categories.forEach(cat => {
+        if (allData.some(item => (item.description||'').toLowerCase().includes(cat.toLowerCase()))) {
+          const li = document.createElement('li');
+          li.textContent = cat;
+          li.addEventListener('click', () => {
+            activeCategory = cat;
+            filterAndRender();
+            sidebar.classList.remove('open');
+            menuBtn.classList.remove('active');
+          });
+          categoryList.appendChild(li);
+        }
       });
     }
 
@@ -175,7 +267,7 @@
       let filtered = [...allData];
       if (activeCategory !== 'Tous'){
         filtered = filtered.filter(item =>
-          (item.description || '').toLowerCase().includes(activeCategory.toLowerCase())
+          (item.description||'').toLowerCase().includes(activeCategory.toLowerCase())
         );
       }
       showCards(filtered);
@@ -203,13 +295,12 @@
         const tagsDiv = document.createElement('div');
         tagsDiv.className = 'card-tags';
         categories.forEach(cat => {
-          if ((item.description || '').toLowerCase().includes(cat.toLowerCase())) {
+          if ((item.description||'').toLowerCase().includes(cat.toLowerCase())) {
             const tag = document.createElement('span');
             tag.className = 'tag';
             tag.textContent = cat;
             tag.addEventListener('click', e => {
               e.stopPropagation();
-              categorySelect.value = cat;
               activeCategory = cat;
               filterAndRender();
             });
