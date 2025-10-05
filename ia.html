@@ -6,7 +6,6 @@
   <title>FlixAI — Explorez les IA du futur</title>
 
   <style>
-    /* === PALETTE MODERNE === */
     :root {
       --bg-dark: #050519;
       --bg-gradient: linear-gradient(135deg, #0a0a2a 0%, #1b0f3b 50%, #02010f 100%);
@@ -18,7 +17,6 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    /* === GLOBAL === */
     body {
       margin: 0;
       background: var(--bg-gradient);
@@ -28,12 +26,8 @@
       animation: fadeIn 1s ease-out;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* === FOND ANIMÉ === */
     body::before {
       content: "";
       position: fixed;
@@ -50,7 +44,6 @@
       100% { background-position: 100% 100%, 0% 0%; }
     }
 
-    /* === HEADER === */
     header {
       position: fixed;
       top: 0;
@@ -72,7 +65,6 @@
       text-shadow: 0 0 18px rgba(127,90,240,0.6);
     }
 
-    /* === HERO === */
     .hero {
       height: 80vh;
       display: flex;
@@ -120,7 +112,6 @@
       box-shadow: 0 0 35px rgba(44,182,125,0.6);
     }
 
-    /* === RECHERCHE === */
     .search-bar {
       display: flex;
       justify-content: center;
@@ -143,12 +134,7 @@
       box-shadow: 0 0 25px rgba(127,90,240,0.3);
     }
 
-    /* === GRILLE === */
-    main {
-      margin-top: 40px;
-      position: relative;
-      z-index: 1;
-    }
+    main { margin-top: 40px; position: relative; z-index: 1; }
 
     .grid {
       display: grid;
@@ -165,14 +151,14 @@
       overflow: hidden;
       box-shadow: 0 8px 30px rgba(0,0,0,0.4);
       backdrop-filter: blur(15px);
-      transform: translateY(10px);
       opacity: 0;
-      animation: appear .8s ease forwards;
+      transform: translateY(10px);
       transition: transform .4s ease, box-shadow .4s ease;
     }
-
-    @keyframes appear {
-      to { opacity: 1; transform: translateY(0); }
+    .card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .6s ease, transform .6s ease;
     }
 
     .card:hover {
@@ -187,28 +173,12 @@
       filter: brightness(0.85);
       transition: filter .3s ease;
     }
-    .card:hover img {
-      filter: brightness(1);
-    }
+    .card:hover img { filter: brightness(1); }
 
-    .card-header {
-      padding: 18px;
-    }
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: #fff;
-    }
-    .card-meta {
-      font-size: 13px;
-      color: #a5b4fc;
-      margin-top: 4px;
-    }
-    .card-body {
-      padding: 0 18px 14px;
-      font-size: 14px;
-      color: #cbd5e1;
-    }
+    .card-header { padding: 18px; }
+    .card-title { font-size: 18px; font-weight: 600; color: #fff; }
+    .card-meta { font-size: 13px; color: #a5b4fc; margin-top: 4px; }
+    .card-body { padding: 0 18px 14px; font-size: 14px; color: #cbd5e1; }
     .card-footer {
       display: block;
       text-align: center;
@@ -220,22 +190,13 @@
       border-top: 1px solid rgba(255,255,255,0.08);
       transition: all .3s ease;
     }
-    .card-footer:hover {
-      background: rgba(127,90,240,0.3);
-    }
+    .card-footer:hover { background: rgba(127,90,240,0.3); }
 
-    footer {
-      text-align: center;
-      color: #a1a1aa;
-      padding: 30px 0 50px;
-      font-size: 14px;
-    }
+    footer { text-align: center; color: #a1a1aa; padding: 30px 0 50px; font-size: 14px; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>FlixAI</h1>
-  </header>
+  <header><h1>FlixAI</h1></header>
 
   <section class="hero">
     <h2>Découvrez les IA du futur</h2>
@@ -251,44 +212,32 @@
     <div id="grid" class="grid"></div>
   </main>
 
-  <footer>
-    <div>🚀 FlixAI — Découvrez et explorez toutes les IA ✨</div>
-  </footer>
+  <footer>🚀 FlixAI — Découvrez et explorez toutes les IA ✨</footer>
 
   <script>
     const grid = document.getElementById('grid');
     const searchInput = document.getElementById('searchInput');
     let allData = [];
+    let currentIndex = 0;
+    const batchSize = 20;
+    let filteredData = [];
 
-    window.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const res = await fetch("data.json");
-        if (!res.ok) throw new Error("Impossible de charger data.json");
-        const data = await res.json();
-        allData = Array.isArray(data) ? data : [data];
-        showCards(allData);
-      } catch (err) {
-        grid.innerHTML = `<div style="color:#f87171;font-weight:700;text-align:center;">Erreur: ${err.message}</div>`;
-      }
-    });
+    async function loadData() {
+      const res = await fetch("data.json");
+      const data = await res.json();
+      allData = Array.isArray(data) ? data : [data];
+      filteredData = allData;
+      renderBatch();
+    }
 
-    searchInput.addEventListener('input', e => {
-      const term = e.target.value.toLowerCase();
-      const filtered = allData.filter(item =>
-        (item.handle || "").toLowerCase().includes(term) ||
-        (item.description || "").toLowerCase().includes(term)
-      );
-      showCards(filtered);
-    });
-
-    function showCards(data) {
-      grid.innerHTML = "";
-      data.forEach((item, index) => {
+    function renderBatch() {
+      const slice = filteredData.slice(currentIndex, currentIndex + batchSize);
+      slice.forEach(item => {
         const card = document.createElement("div");
         card.className = "card";
-        card.style.animationDelay = `${index * 0.05}s`;
 
         const img = document.createElement("img");
+        img.loading = "lazy";
         img.src = item.image || "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80";
         img.alt = item.handle || "image IA";
 
@@ -309,8 +258,43 @@
 
         card.append(img, header, body, footer);
         grid.appendChild(card);
+
+        // Observer pour animation d’apparition
+        observer.observe(card);
       });
+      currentIndex += batchSize;
     }
+
+    // Animation visible au scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    // Scroll infini
+    window.addEventListener("scroll", () => {
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+        renderBatch();
+      }
+    });
+
+    // Recherche optimisée
+    searchInput.addEventListener('input', e => {
+      const term = e.target.value.toLowerCase();
+      grid.innerHTML = "";
+      currentIndex = 0;
+      filteredData = allData.filter(item =>
+        (item.handle || "").toLowerCase().includes(term) ||
+        (item.description || "").toLowerCase().includes(term)
+      );
+      renderBatch();
+    });
+
+    loadData();
   </script>
 </body>
 </html>
