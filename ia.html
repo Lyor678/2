@@ -25,6 +25,11 @@
 
     * { box-sizing: border-box; }
 
+    body[data-theme="dark"] {
+      background: var(--bg);
+      color: var(--text);
+    }
+
     body {
       margin: 0;
       font-family: "Poppins", system-ui, sans-serif;
@@ -35,7 +40,6 @@
       transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* HEADER */
     header {
       position: fixed;
       top: 0;
@@ -60,7 +64,6 @@
       color: var(--accent);
     }
 
-    /* BOUTONS */
     .menu-btn {
       position: absolute;
       left: 20px;
@@ -101,7 +104,6 @@
 
     .theme-toggle:hover { transform: scale(1.1); }
 
-    /* SIDEBAR */
     .sidebar {
       position: fixed;
       top: 0;
@@ -142,7 +144,6 @@
       border-left: 3px solid var(--accent);
     }
 
-    /* OVERLAY */
     .overlay {
       position: fixed;
       top: 0; left: 0;
@@ -156,7 +157,6 @@
     }
     .overlay.active { opacity: 1; visibility: visible; }
 
-    /* MAIN */
     main {
       margin-top: 90px;
       padding: 0 24px;
@@ -170,7 +170,6 @@
       margin: 40px auto;
     }
 
-    /* CARD */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
@@ -233,7 +232,7 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
   <div class="overlay" id="overlay"></div>
 
   <header>
@@ -241,7 +240,7 @@
       <span></span><span></span><span></span>
     </button>
     <h1>FlixAI</h1>
-    <button class="theme-toggle" id="themeToggle">🌙</button>
+    <button class="theme-toggle" id="themeToggle">☀️</button>
   </header>
 
   <nav class="sidebar" id="sidebar">
@@ -276,7 +275,6 @@
     ];
 
     let allData = [];
-    let activeCategory = "Tous";
 
     menuBtn.addEventListener("click", toggleMenu);
     overlay.addEventListener("click", closeMenu);
@@ -320,21 +318,13 @@
       categoryList.innerHTML = "";
       const allLi = document.createElement("li");
       allLi.textContent = "Toutes les catégories";
-      allLi.addEventListener("click", () => {
-        activeCategory = "Tous";
-        showCards(allData);
-        closeMenu();
-      });
+      allLi.addEventListener("click", () => { showCards(allData); closeMenu(); });
       categoryList.appendChild(allLi);
 
       categories.forEach(cat => {
         const li = document.createElement("li");
         li.textContent = cat;
-        li.addEventListener("click", () => {
-          activeCategory = cat;
-          filterByCategory(cat);
-          closeMenu();
-        });
+        li.addEventListener("click", () => { filterByCategory(cat); closeMenu(); });
         categoryList.appendChild(li);
       });
     }
