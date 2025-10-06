@@ -3,15 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FlixAI — Explorez les IA du futur</title>
+  <title>FlixAI — Découvrez les IA du futur</title>
   <style>
     :root {
-      --bg: #f4f4f4;
-      --text: #111;
-      --accent: #2b2b2b;
-      --card-bg: rgba(255, 255, 255, 0.25);
-      --glass: rgba(255, 255, 255, 0.1);
+      --bg: #f2f2f2;
+      --text: #1a1a1a;
+      --accent: #2f2f2f;
+      --card-bg: rgba(255, 255, 255, 0.3);
       --shadow: rgba(0, 0, 0, 0.1);
+      --glass-border: rgba(255,255,255,0.4);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0e0e10;
+      --text: #e6e6e6;
+      --accent: #d1d1d1;
+      --card-bg: rgba(30, 30, 32, 0.4);
+      --shadow: rgba(0, 0, 0, 0.6);
+      --glass-border: rgba(255,255,255,0.1);
     }
 
     * { box-sizing: border-box; }
@@ -19,36 +28,39 @@
     body {
       margin: 0;
       font-family: "Poppins", system-ui, sans-serif;
-      background: linear-gradient(135deg, #fafafa, #e9ecef);
+      background: var(--bg);
       color: var(--text);
       overflow-x: hidden;
       min-height: 100vh;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
+    /* Header */
     header {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       padding: 16px 20px;
-      background: rgba(255, 255, 255, 0.5);
+      background: var(--card-bg);
       backdrop-filter: blur(20px);
-      box-shadow: 0 4px 30px var(--shadow);
+      border-bottom: 1px solid var(--glass-border);
+      box-shadow: 0 4px 20px var(--shadow);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 10;
+      transition: background 0.3s ease;
     }
 
     h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 24px;
+      font-weight: 600;
       color: var(--accent);
-      letter-spacing: 1px;
-      font-weight: 700;
     }
 
-    /* --- MENU BURGER --- */
+    /* Bouton menu */
     .menu-btn {
       position: absolute;
       left: 20px;
@@ -58,8 +70,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      width: 28px;
-      height: 20px;
+      width: 26px;
+      height: 18px;
       z-index: 20;
     }
 
@@ -67,24 +79,39 @@
       display: block;
       height: 3px;
       width: 100%;
-      background: var(--accent);
+      background: var(--text);
       border-radius: 3px;
       transition: all .3s ease;
     }
 
-    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(8px);}
+    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(7px);}
     .menu-btn.active span:nth-child(2){opacity:0;}
-    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-8px);}
+    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-7px);}
 
-    /* --- SIDEBAR --- */
+    /* Bouton dark mode */
+    .theme-toggle {
+      position: absolute;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: var(--text);
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle:hover { transform: scale(1.1); }
+
+    /* Sidebar */
     .sidebar {
       position: fixed;
       top: 0;
       left: -280px;
       width: 240px;
       height: 100%;
-      background: rgba(255, 255, 255, 0.25);
-      backdrop-filter: blur(20px);
+      background: var(--card-bg);
+      backdrop-filter: blur(18px);
+      border-right: 1px solid var(--glass-border);
       box-shadow: 4px 0 20px var(--shadow);
       transition: left 0.4s ease;
       z-index: 15;
@@ -97,7 +124,7 @@
       font-size: 16px;
       color: var(--accent);
       margin: 10px 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--glass-border);
       padding-bottom: 6px;
     }
 
@@ -110,18 +137,17 @@
       transition: all 0.3s ease;
     }
     .sidebar li:hover {
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.15);
       border-left: 3px solid var(--accent);
     }
 
+    /* Overlay */
     .overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(3px);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
       opacity: 0;
       visibility: hidden;
       transition: opacity .4s ease;
@@ -129,7 +155,7 @@
     }
     .overlay.active { opacity: 1; visibility: visible; }
 
-    /* --- MAIN --- */
+    /* Contenu principal */
     main {
       margin-top: 90px;
       padding: 0 24px;
@@ -143,20 +169,21 @@
       margin: 40px auto;
     }
 
-    /* --- CARDS --- */
+    /* Cartes */
     .card {
       background: var(--card-bg);
-      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
       box-shadow: 0 8px 24px var(--shadow);
       backdrop-filter: blur(20px);
       overflow: hidden;
-      transition: transform .3s ease, box-shadow .3s ease;
+      transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
       display: flex;
       flex-direction: column;
     }
 
     .card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       box-shadow: 0 12px 28px rgba(0,0,0,0.2);
     }
 
@@ -164,7 +191,7 @@
       width: 100%;
       height: 160px;
       object-fit: cover;
-      border-bottom: 1px solid rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .card-header {
@@ -179,19 +206,19 @@
 
     .card-meta {
       font-size: 12px;
-      color: #555;
+      color: #888;
       margin-top: 4px;
     }
 
     .card-body {
       padding: 0 16px 16px;
       font-size: 14px;
-      color: #333;
+      color: var(--text);
       flex-grow: 1;
     }
 
     .card-footer {
-      background: rgba(0, 0, 0, 0.05);
+      background: rgba(0,0,0,0.05);
       text-align: center;
       padding: 12px;
       text-decoration: none;
@@ -199,18 +226,13 @@
       font-weight: 500;
       transition: background 0.3s ease;
     }
-    .card-footer:hover { background: rgba(0, 0, 0, 0.1); }
+    .card-footer:hover { background: rgba(0,0,0,0.1); }
 
     footer {
       text-align: center;
-      color: #666;
+      color: #777;
       font-size: 13px;
       padding: 30px 0;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -222,6 +244,7 @@
       <span></span><span></span><span></span>
     </button>
     <h1>FlixAI</h1>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
   </header>
 
   <nav class="sidebar" id="sidebar">
@@ -234,7 +257,7 @@
   </main>
 
   <footer>
-    FlixAI — Découvrez les meilleures IA du moment 🚀
+    FlixAI — Découvrez et explorez les meilleures IA 🤖
   </footer>
 
   <script>
@@ -243,6 +266,7 @@
     const overlay = document.getElementById('overlay');
     const grid = document.getElementById('grid');
     const categoryList = document.getElementById('categoryList');
+    const themeToggle = document.getElementById('themeToggle');
 
     const categories = [
       "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
@@ -259,6 +283,7 @@
     let allData = [];
     let activeCategory = "Tous";
 
+    // Menu burger
     menuBtn.addEventListener("click", toggleMenu);
     overlay.addEventListener("click", closeMenu);
 
@@ -274,6 +299,19 @@
       menuBtn.classList.remove("active");
     }
 
+    // Thème clair/sombre
+    themeToggle.addEventListener("click", () => {
+      const current = document.body.getAttribute("data-theme");
+      if (current === "dark") {
+        document.body.removeAttribute("data-theme");
+        themeToggle.textContent = "🌙";
+      } else {
+        document.body.setAttribute("data-theme", "dark");
+        themeToggle.textContent = "☀️";
+      }
+    });
+
+    // Chargement
     window.addEventListener("DOMContentLoaded", async () => {
       try {
         const res = await fetch("data.json");
@@ -281,7 +319,7 @@
         allData = Array.isArray(data) ? data : [data];
         renderCategories();
         showCards(allData);
-      } catch (err) {
+      } catch {
         grid.innerHTML = `<div style="color:red;font-weight:700;">Erreur de chargement des données</div>`;
       }
     });
@@ -323,8 +361,8 @@
         card.className = "card";
 
         const img = document.createElement("img");
-        img.src = item.image || "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=crop&w=800&q=80";
-        img.alt = item.handle || "image IA";
+        img.src = item.image || getAiImage();
+        img.alt = item.handle || "IA image";
 
         const header = document.createElement("div");
         header.className = "card-header";
@@ -341,12 +379,21 @@
         footer.target = "_blank";
         footer.textContent = "Visiter le site";
 
-        card.appendChild(img);
-        card.appendChild(header);
-        card.appendChild(body);
-        card.appendChild(footer);
+        card.append(img, header, body, footer);
         grid.appendChild(card);
       });
+    }
+
+    // Images IA abstraites
+    function getAiImage() {
+      const images = [
+        "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
+        "https://images.unsplash.com/photo-1628883050054-1b49e02ddbe3?auto=format&fit=crop&w=800&q=80",
+      ];
+      return images[Math.floor(Math.random() * images.length)];
     }
 
     function escapeHtml(s) {
