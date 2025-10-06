@@ -20,9 +20,7 @@
     overflow: hidden;
   }
 
-  /* Conteneur du logo */
   .logo-container {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,30 +28,30 @@
   }
 
   .logo {
-    font-size: 60px;
+    font-size: 70px;
     font-weight: 700;
     color: rgba(255,255,255,0.1);
-    text-shadow: 0 0 30px rgba(255,255,255,0.2);
-    letter-spacing: 10px;
+    text-shadow: 0 0 20px rgba(255,255,255,0.2),
+                 0 0 40px rgba(56,189,248,0.15);
+    letter-spacing: 12px;
     transform: scale(0.3);
     opacity: 0;
     backdrop-filter: blur(15px);
     border-radius: 15px;
     padding: 20px 40px;
     border: 1px solid rgba(255,255,255,0.2);
-    animation: appear 2s forwards;
+    animation: appear 6s forwards;
   }
 
-  /* Effet de zoom et apparition */
   @keyframes appear {
     0% { opacity: 0; transform: scale(0.3) rotateY(45deg); letter-spacing: 50px; }
-    50% { opacity: 1; transform: scale(1.1) rotateY(-10deg); letter-spacing: 15px; }
-    100% { transform: scale(1) rotateY(0deg); letter-spacing: 10px; }
+    40% { opacity: 1; transform: scale(1.05) rotateY(-10deg); letter-spacing: 15px; }
+    70% { transform: scale(1.02) rotateY(5deg); }
+    100% { transform: scale(1) rotateY(0deg); letter-spacing: 12px; }
   }
 
-  /* Transition pour disparaître avant site */
   .fade-out {
-    animation: fadeOut 1s forwards;
+    animation: fadeOut 1.5s forwards;
   }
 
   @keyframes fadeOut {
@@ -67,14 +65,14 @@
   </div>
 
 <script>
-  // Après 3.5 secondes, on fait disparaître le logo et redirige vers le site principal
+  // Intro plus longue: 6.5 secondes avant fade-out
   setTimeout(() => {
     const logo = document.getElementById('logo');
     logo.classList.add('fade-out');
     setTimeout(() => {
       window.location.href = "ia.html"; // Remplace par le chemin de ton site
-    }, 1000);
-  }, 3500);
+    }, 1500);
+  }, 6500);
 </script>
 </body>
 </html>
