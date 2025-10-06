@@ -25,11 +25,6 @@
 
     * { box-sizing: border-box; }
 
-    body[data-theme="dark"] {
-      background: var(--bg);
-      color: var(--text);
-    }
-
     body {
       margin: 0;
       font-family: "Poppins", system-ui, sans-serif;
@@ -118,7 +113,6 @@
       z-index: 15;
       padding-top: 80px;
       overflow-y: auto;
-      scrollbar-width: thin;
     }
 
     .sidebar.open { left: 0; }
@@ -157,8 +151,37 @@
     }
     .overlay.active { opacity: 1; visibility: visible; }
 
+    .search-container {
+      position: sticky;
+      top: 70px;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+      z-index: 8;
+      background: var(--bg);
+    }
+
+    .search-bar {
+      width: 80%;
+      max-width: 600px;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: box-shadow 0.3s ease, background 0.3s ease;
+    }
+
+    .search-bar:focus {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
     main {
-      margin-top: 90px;
+      margin-top: 120px;
       padding: 0 24px;
     }
 
@@ -236,9 +259,7 @@
   <div class="overlay" id="overlay"></div>
 
   <header>
-    <button class="menu-btn" id="menuBtn">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
     <h1>FlixAI</h1>
     <button class="theme-toggle" id="themeToggle">☀️</button>
   </header>
@@ -247,6 +268,10 @@
     <h2>Catégories</h2>
     <ul id="categoryList"></ul>
   </nav>
+
+  <div class="search-container">
+    <input id="searchBar" type="text" class="search-bar" placeholder="Rechercher une IA (ex: free business, image, etc.)...">
+  </div>
 
   <main>
     <div id="grid" class="grid"></div>
@@ -261,6 +286,7 @@
     const grid = document.getElementById('grid');
     const categoryList = document.getElementById('categoryList');
     const themeToggle = document.getElementById('themeToggle');
+    const searchBar = document.getElementById('searchBar');
 
     const categories = [
       "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
@@ -324,15 +350,23 @@
       categories.forEach(cat => {
         const li = document.createElement("li");
         li.textContent = cat;
-        li.addEventListener("click", () => { filterByCategory(cat); closeMenu(); });
+        li.addEventListener("click", () => { filterByKeyword(cat); closeMenu(); });
         categoryList.appendChild(li);
       });
     }
 
-    function filterByCategory(keyword) {
-      const filtered = allData.filter(item =>
-        (item.description || "").toLowerCase().includes(keyword.toLowerCase())
-      );
+    searchBar.addEventListener("input", () => {
+      const query = searchBar.value.trim();
+      filterByKeyword(query);
+    });
+
+    function filterByKeyword(query) {
+      if (!query) return showCards(allData);
+      const words = query.toLowerCase().split(/\s+/);
+      const filtered = allData.filter(item => {
+        const text = ((item.description || "") + " " + (item.handle || "")).toLowerCase();
+        return words.every(word => text.includes(word));
+      });
       showCards(filtered);
     }
 
@@ -344,7 +378,7 @@
 
         const img = document.createElement("img");
         img.src = "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80";
-        img.alt = "IA Image";
+        img.alt = "IA";
 
         const header = document.createElement("div");
         header.className = "card-header";
