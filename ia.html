@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FlixAI — Découvrez les IA du futur</title>
+  <title>FlixAI — Les Meilleures IA</title>
   <style>
     :root {
-      --bg: #f2f2f2;
+      --bg: #f4f4f4;
       --text: #1a1a1a;
       --accent: #2f2f2f;
-      --card-bg: rgba(255, 255, 255, 0.3);
+      --card-bg: rgba(255, 255, 255, 0.25);
       --shadow: rgba(0, 0, 0, 0.1);
       --glass-border: rgba(255,255,255,0.4);
     }
 
     [data-theme="dark"] {
       --bg: #0e0e10;
-      --text: #e6e6e6;
+      --text: #eaeaea;
       --accent: #d1d1d1;
-      --card-bg: rgba(30, 30, 32, 0.4);
-      --shadow: rgba(0, 0, 0, 0.6);
+      --card-bg: rgba(40, 40, 42, 0.4);
+      --shadow: rgba(0, 0, 0, 0.5);
       --glass-border: rgba(255,255,255,0.1);
     }
 
@@ -35,7 +35,7 @@
       transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* Header */
+    /* HEADER */
     header {
       position: fixed;
       top: 0;
@@ -55,12 +55,12 @@
 
     h1 {
       margin: 0;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 600;
       color: var(--accent);
     }
 
-    /* Bouton menu */
+    /* BOUTONS */
     .menu-btn {
       position: absolute;
       left: 20px;
@@ -88,7 +88,6 @@
     .menu-btn.active span:nth-child(2){opacity:0;}
     .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-7px);}
 
-    /* Bouton dark mode */
     .theme-toggle {
       position: absolute;
       right: 20px;
@@ -102,7 +101,7 @@
 
     .theme-toggle:hover { transform: scale(1.1); }
 
-    /* Sidebar */
+    /* SIDEBAR */
     .sidebar {
       position: fixed;
       top: 0;
@@ -116,12 +115,14 @@
       transition: left 0.4s ease;
       z-index: 15;
       padding-top: 80px;
+      overflow-y: auto;
+      scrollbar-width: thin;
     }
 
     .sidebar.open { left: 0; }
 
     .sidebar h2 {
-      font-size: 16px;
+      font-size: 15px;
       color: var(--accent);
       margin: 10px 20px;
       border-bottom: 1px solid var(--glass-border);
@@ -137,16 +138,16 @@
       transition: all 0.3s ease;
     }
     .sidebar li:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.1);
       border-left: 3px solid var(--accent);
     }
 
-    /* Overlay */
+    /* OVERLAY */
     .overlay {
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4);
+      background: rgba(0, 0, 0, 0.3);
       backdrop-filter: blur(4px);
       opacity: 0;
       visibility: hidden;
@@ -155,7 +156,7 @@
     }
     .overlay.active { opacity: 1; visibility: visible; }
 
-    /* Contenu principal */
+    /* MAIN */
     main {
       margin-top: 90px;
       padding: 0 24px;
@@ -169,7 +170,7 @@
       margin: 40px auto;
     }
 
-    /* Cartes */
+    /* CARD */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
@@ -194,16 +195,12 @@
       border-bottom: 1px solid var(--glass-border);
     }
 
-    .card-header {
-      padding: 16px;
-    }
-
+    .card-header { padding: 16px; }
     .card-title {
       font-size: 18px;
       font-weight: 600;
       color: var(--accent);
     }
-
     .card-meta {
       font-size: 12px;
       color: #888;
@@ -256,9 +253,7 @@
     <div id="grid" class="grid"></div>
   </main>
 
-  <footer>
-    FlixAI — Découvrez et explorez les meilleures IA 🤖
-  </footer>
+  <footer>FlixAI — Découvrez les meilleures IA 🤖</footer>
 
   <script>
     const menuBtn = document.getElementById('menuBtn');
@@ -283,7 +278,6 @@
     let allData = [];
     let activeCategory = "Tous";
 
-    // Menu burger
     menuBtn.addEventListener("click", toggleMenu);
     overlay.addEventListener("click", closeMenu);
 
@@ -299,7 +293,6 @@
       menuBtn.classList.remove("active");
     }
 
-    // Thème clair/sombre
     themeToggle.addEventListener("click", () => {
       const current = document.body.getAttribute("data-theme");
       if (current === "dark") {
@@ -311,7 +304,6 @@
       }
     });
 
-    // Chargement
     window.addEventListener("DOMContentLoaded", async () => {
       try {
         const res = await fetch("data.json");
@@ -320,7 +312,7 @@
         renderCategories();
         showCards(allData);
       } catch {
-        grid.innerHTML = `<div style="color:red;font-weight:700;">Erreur de chargement des données</div>`;
+        grid.innerHTML = `<div style="color:red;font-weight:700;">Erreur de chargement</div>`;
       }
     });
 
@@ -361,8 +353,8 @@
         card.className = "card";
 
         const img = document.createElement("img");
-        img.src = item.image || getAiImage();
-        img.alt = item.handle || "IA image";
+        img.src = "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80";
+        img.alt = "IA Image";
 
         const header = document.createElement("div");
         header.className = "card-header";
@@ -382,18 +374,6 @@
         card.append(img, header, body, footer);
         grid.appendChild(card);
       });
-    }
-
-    // Images IA abstraites
-    function getAiImage() {
-      const images = [
-        "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
-        "https://images.unsplash.com/photo-1628883050054-1b49e02ddbe3?auto=format&fit=crop&w=800&q=80",
-      ];
-      return images[Math.floor(Math.random() * images.length)];
     }
 
     function escapeHtml(s) {
