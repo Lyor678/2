@@ -1,84 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flix AI Intro</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>FlixAI Intro</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
 
-    svg {
-      width: 70%;
-      height: auto;
-      transform-origin: center center;
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    text.stroke {
-      fill: none;
-      stroke: #00aaff;
-      stroke-width: 6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      stroke-dasharray: 2000;
-      stroke-dashoffset: 2000;
-      animation: draw 1.5s ease-out forwards;
-    }
+  body, html {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0b0f1a, #1a1a2e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+  }
 
-    @keyframes draw {
-      to { stroke-dashoffset: 0; }
-    }
+  /* Conteneur du logo */
+  .logo-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+  }
 
-    text.fill {
-      fill: #00aaff;
-      opacity: 0;
-      animation: fillIn 0.5s forwards;
-      animation-delay: 1.5s;
-    }
+  .logo {
+    font-size: 60px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.1);
+    text-shadow: 0 0 30px rgba(255,255,255,0.2);
+    letter-spacing: 10px;
+    transform: scale(0.3);
+    opacity: 0;
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 20px 40px;
+    border: 1px solid rgba(255,255,255,0.2);
+    animation: appear 2s forwards;
+  }
 
-    @keyframes fillIn {
-      to { opacity: 1; }
-    }
+  /* Effet de zoom et apparition */
+  @keyframes appear {
+    0% { opacity: 0; transform: scale(0.3) rotateY(45deg); letter-spacing: 50px; }
+    50% { opacity: 1; transform: scale(1.1) rotateY(-10deg); letter-spacing: 15px; }
+    100% { transform: scale(1) rotateY(0deg); letter-spacing: 10px; }
+  }
 
-    .zoom {
-      animation: zoomIn 0.8s ease-in forwards;
-      animation-delay: 2s;
-    }
+  /* Transition pour disparaître avant site */
+  .fade-out {
+    animation: fadeOut 1s forwards;
+  }
 
-    @keyframes zoomIn {
-      to {
-        transform: scale(3);
-        opacity: 0;
-      }
-    }
-  </style>
+  @keyframes fadeOut {
+    to { opacity: 0; transform: scale(0.5); }
+  }
+</style>
 </head>
 <body>
-  <svg viewBox="0 0 1000 300" id="logo">
-    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="150" font-weight="bold" class="stroke">FLIXAI</text>
-    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-size="150" font-weight="bold" class="fill">FLIXAI</text>
-  </svg>
+  <div class="logo-container">
+    <div class="logo" id="logo">FlixAI</div>
+  </div>
 
-  <script>
-    const svg = document.getElementById('logo');
-    const strokeText = svg.querySelector('text.stroke');
-
-    // Quand l'animation du tracé est terminée, ajoute le zoom
-    strokeText.addEventListener('animationend', () => {
-      svg.classList.add('zoom');
-      setTimeout(() => {
-        window.location.href = "ia.html";
-      }, 800); // redirection après le zoom
-    });
-  </script>
+<script>
+  // Après 3.5 secondes, on fait disparaître le logo et redirige vers le site principal
+  setTimeout(() => {
+    const logo = document.getElementById('logo');
+    logo.classList.add('fade-out');
+    setTimeout(() => {
+      window.location.href = "ia.html"; // Remplace par le chemin de ton site
+    }, 1000);
+  }, 3500);
+</script>
 </body>
 </html>
