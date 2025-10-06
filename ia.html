@@ -1,423 +1,361 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>FlixAI — Explorez les IA du futur</title>
-<style>
-:root{
-  --bg1:#050519; --bg2:#071028;
-  --accent:#7f5af0; --accent2:#2cb67d;
-  --card-accent:rgba(127,90,240,0.12);
-  --text:#e8e8f8;
-  --glass:rgba(255,255,255,0.04);
-  --radius:12px;
-  --fast:180ms;
-  font-family:"Inter","Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; color:var(--text);
-  background:
-    radial-gradient(circle at 12% 10%, rgba(127,90,240,0.04), transparent 8%),
-    radial-gradient(circle at 92% 86%, rgba(44,182,125,0.03), transparent 8%),
-    linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-  transition: background .45s ease, color .35s ease;
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-  overflow-y:scroll;
-}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlixAI — Explorez les IA du futur</title>
+  <style>
+    :root {
+      --bg: #f4f4f4;
+      --text: #111;
+      --accent: #2b2b2b;
+      --card-bg: rgba(255, 255, 255, 0.25);
+      --glass: rgba(255, 255, 255, 0.1);
+      --shadow: rgba(0, 0, 0, 0.1);
+    }
 
-/* Header */
-header{
-  position:fixed; left:0; right:0; top:0; height:64px;
-  display:flex; align-items:center; justify-content:center;
-  padding:0 20px; z-index:200; gap:12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  backdrop-filter: blur(8px); box-shadow:0 6px 20px rgba(0,0,0,0.45);
-}
-.menu-btn{
-  position:absolute; left:18px; width:36px; height:28px; background:transparent; border:0;
-  display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; padding:0; z-index:220;
-}
-.menu-btn span{ display:block; height:3px; width:100%; border-radius:3px; background:var(--accent); transition: transform var(--fast) ease, opacity var(--fast) ease; }
-.menu-btn.active span:nth-child(1){ transform: rotate(45deg) translateY(9px); }
-.menu-btn.active span:nth-child(2){ opacity:0; }
-.menu-btn.active span:nth-child(3){ transform: rotate(-45deg) translateY(-9px); }
-header h1{ margin:0; font-size:20px; color:var(--accent); letter-spacing:.6px; text-shadow:0 8px 28px rgba(127,90,240,0.12); }
+    * { box-sizing: border-box; }
 
-/* Overlay & sidebar */
-.overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.36); opacity:0; visibility:hidden; transition:opacity .28s ease; z-index:190; }
-.overlay.active{ opacity:1; visibility:visible; }
-.sidebar{
-  position:fixed; top:0; left:-320px; width:300px; height:100vh; padding:78px 16px 28px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  box-shadow: 6px 0 30px rgba(0,0,0,0.5); backdrop-filter: blur(18px) saturate(120%);
-  border-right:1px solid rgba(255,255,255,0.03); transition:left .32s cubic-bezier(.2,.9,.2,1); z-index:210; overflow:auto;
-}
-.sidebar.open{ left:0; }
-.sidebar h2{ color:var(--accent); margin:6px 6px 12px; font-size:14px; letter-spacing:.6px; border-bottom:1px dashed rgba(255,255,255,0.03); padding-bottom:8px;}
-.sidebar ul{ list-style:none; margin:0; padding:0 6px 14px 6px; }
-.sidebar li{ padding:9px 12px; margin:6px 0; border-radius:8px; color:var(--text); font-size:13px; cursor:pointer; transition: background .16s ease, transform .16s ease; }
-.sidebar li:hover{ background: linear-gradient(90deg, rgba(127,90,240,0.06), rgba(44,182,125,0.03)); transform: translateX(6px); }
+    body {
+      margin: 0;
+      font-family: "Poppins", system-ui, sans-serif;
+      background: linear-gradient(135deg, #fafafa, #e9ecef);
+      color: var(--text);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
 
-/* themes */
-.theme-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; padding:6px; margin-top:8px; margin-bottom:18px; }
-.theme-card{ display:flex; gap:8px; align-items:center; padding:8px; border-radius:8px; background: rgba(255,255,255,0.015); border:1px solid rgba(255,255,255,0.02); cursor:pointer; transition: transform .16s ease, box-shadow .16s ease;}
-.theme-card:hover{ transform: translateY(-4px); box-shadow:0 8px 26px rgba(0,0,0,0.35); }
-.swatches{ display:flex; gap:6px; align-items:center; }
-.sw{ width:28px; height:28px; border-radius:6px; box-shadow: inset 0 -2px 6px rgba(0,0,0,0.18); border:1px solid rgba(255,255,255,0.02); }
-.theme-label{ font-size:12px; color:var(--text); margin-left:auto; opacity:.95; }
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 4px 30px var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
 
-/* hero banner */
-.hero{ position:relative; height:360px; margin-top:64px; display:flex; align-items:center; justify-content:center; text-align:center; color:#fff; background-size:cover; background-position:center; background-repeat:no-repeat; transition: background .45s ease, filter .35s ease; border-bottom: 1px solid rgba(255,255,255,0.02);}
-.hero::after{ content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0.22), rgba(0,0,0,0.4)); backdrop-filter: blur(3px); }
-.hero-content{ position:relative; z-index:10; padding:8px 14px; max-width:920px; }
-.hero h2{ font-size:34px; margin:0 0 8px; }
-.hero p{ margin:0; color:rgba(255,255,255,0.92); font-size:15px; }
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      color: var(--accent);
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
 
-/* main & grid */
-main{ padding:28px 20px 80px; max-width:1320px; margin:0 auto; }
-.grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:22px; margin-top:26px; }
+    /* --- MENU BURGER --- */
+    .menu-btn {
+      position: absolute;
+      left: 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      z-index: 20;
+    }
 
-.card{
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  border-radius:12px; overflow:hidden; box-shadow:0 10px 30px rgba(2,6,23,0.6);
-  border:1px solid rgba(255,255,255,0.03); transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s ease, border-color .22s ease; display:flex; flex-direction:column;
-}
-.card:hover{ transform: translateY(-10px); box-shadow: 0 18px 40px rgba(2,6,23,0.72); }
+    .menu-btn span {
+      display: block;
+      height: 3px;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: all .3s ease;
+    }
 
-.imgwrap{ position:relative; height:150px; overflow:hidden; }
-.imgwrap img{ width:100%; height:100%; object-fit:cover; display:block; transform: scale(1.02); transition: transform .42s ease, filter .32s ease; user-select:none; }
-.card:hover .imgwrap img{ transform: scale(1.06); }
+    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(8px);}
+    .menu-btn.active span:nth-child(2){opacity:0;}
+    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-8px);}
 
-/* tint overlay applied to images to match theme */
-.img-tint{ position:absolute; inset:0; pointer-events:none; mix-blend-mode: color; transition: background .32s ease, opacity .22s ease; opacity:.88; }
+    /* --- SIDEBAR --- */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 240px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(20px);
+      box-shadow: 4px 0 20px var(--shadow);
+      transition: left 0.4s ease;
+      z-index: 15;
+      padding-top: 80px;
+    }
 
-.card-header{ padding:12px 14px; display:flex; flex-direction:column; gap:6px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005)); }
-.title{ font-size:15px; font-weight:600; color:var(--text); margin:0; }
-.meta{ font-size:12px; color: rgba(255,255,255,0.75); }
+    .sidebar.open { left: 0; }
 
-.card-body{ padding:10px 14px; font-size:13px; color: rgba(255,255,255,0.9); flex:1; }
-.card-footer{ padding:10px 14px; text-align:center; font-weight:700; cursor:pointer; text-decoration:none; background:var(--card-accent); color:var(--bg2); border-top:1px solid rgba(255,255,255,0.02); transition: transform .16s ease, box-shadow .16s ease; }
-.card-footer:hover{ transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.45); }
+    .sidebar h2 {
+      font-size: 16px;
+      color: var(--accent);
+      margin: 10px 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      padding-bottom: 6px;
+    }
 
-footer{ text-align:center; padding:38px 10px; color:rgba(255,255,255,0.6); font-size:13px; }
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li {
+      padding: 10px 20px;
+      cursor: pointer;
+      color: var(--text);
+      border-left: 3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .sidebar li:hover {
+      background: rgba(255, 255, 255, 0.5);
+      border-left: 3px solid var(--accent);
+    }
 
-/* small screens */
-@media (max-width:720px){
-  .sidebar{ width:86vw; left:-86vw; } .sidebar.open{ left:0; }
-  .hero{ height:260px; margin-top:64px; }
-  header h1{ font-size:18px; }
-}
-</style>
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .4s ease;
+      z-index: 5;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* --- MAIN --- */
+    main {
+      margin-top: 90px;
+      padding: 0 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1300px;
+      margin: 40px auto;
+    }
+
+    /* --- CARDS --- */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px var(--shadow);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+      padding: 16px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .card-meta {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .card-body {
+      padding: 0 16px 16px;
+      font-size: 14px;
+      color: #333;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      background: rgba(0, 0, 0, 0.05);
+      text-align: center;
+      padding: 12px;
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+    .card-footer:hover { background: rgba(0, 0, 0, 0.1); }
+
+    footer {
+      text-align: center;
+      color: #666;
+      font-size: 13px;
+      padding: 30px 0;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
+  <div class="overlay" id="overlay"></div>
 
-<div class="overlay" id="overlay"></div>
+  <header>
+    <button class="menu-btn" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
+    <h1>FlixAI</h1>
+  </header>
 
-<header>
-  <button class="menu-btn" id="menuBtn" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-  <h1>FlixAI</h1>
-</header>
+  <nav class="sidebar" id="sidebar">
+    <h2>Catégories</h2>
+    <ul id="categoryList"></ul>
+  </nav>
 
-<nav class="sidebar" id="sidebar" aria-hidden="true">
-  <h2>Catégories</h2>
-  <ul id="categoryList" aria-label="Liste des catégories"></ul>
+  <main>
+    <div id="grid" class="grid"></div>
+  </main>
 
-  <h2>Thèmes</h2>
-  <div class="theme-grid" id="themeGrid" aria-label="Choix des thèmes"></div>
-</nav>
+  <footer>
+    FlixAI — Découvrez les meilleures IA du moment 🚀
+  </footer>
 
-<section class="hero" id="hero" role="region" aria-label="Bannière">
-  <div class="hero-content">
-    <h2>Découvrez les IA du futur</h2>
-    <p>Plateforme minimaliste & professionnelle — choisis un thème pour harmoniser le site et les cartes.</p>
-  </div>
-</section>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const grid = document.getElementById('grid');
+    const categoryList = document.getElementById('categoryList');
 
-<main>
-  <div id="grid" class="grid" aria-live="polite"></div>
-</main>
+    const categories = [
+      "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
+      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
+      "Logo Design","Web Mockup","Photo Editing","Art Concept","Video Editing","Talking Avatar","Dubbing",
+      "Text-to-Video","Video Upscale","Voice Generation","Voice Cloning","Audio Mixing","Audio Transcription",
+      "Podcast Creation","Article Writing","Scriptwriting","Text Summarization","Text Correction","Creative Writing",
+      "Code Assistance","Automated Testing","Website Creation","Documentation","Cybersecurity","Dynamic Pricing",
+      "Sales Forecasting","Inventory Management","Customer Support","Product Recommendation","Course Creation",
+      "Personal Tutor","Quiz & Test","Student Performance","Accounting","Financial Forecasting","Fraud Detection",
+      "Automated Trading","Investment Management"
+    ];
 
-<footer>FlixAI — © 2025</footer>
+    let allData = [];
+    let activeCategory = "Tous";
 
-<script>
-/* --------------------------
-   ALL DATA in-code (edit/add)
-   Each item: { id, handle, description, website, categories:[] }
-   --------------------------*/
-const ALL_DATA = [
-  { id:"ai-001", handle:"BizBrain", description:"Business intelligence et analyse des ventes", website:"#", categories:["Business","Sales Forecasting","Market Analysis"] },
-  { id:"ai-002", handle:"ProdBoost", description:"Outil de Productivité et gestion des tâches", website:"#", categories:["Productivity","Task Automation","Project Management"] },
-  { id:"ai-003", handle:"PitchMate", description:"Générateur de Business Plan et pitch deck", website:"#", categories:["Business Plan","Startup Idea","Copywriting"] },
-  { id:"ai-004", handle:"MailCraft", description:"Rédaction d'emails pro et réponses automatiques", website:"#", categories:["Email Writing","Customer Support","Copywriting"] },
-  { id:"ai-005", handle:"AdGenius", description:"Création de campagnes publicitaires et analysis", website:"#", categories:["Ad Campaign","Market Analysis","SEO"] },
-  { id:"ai-006", handle:"ImageForge", description:"Image Generation & Logo Design", website:"#", categories:["Image Generation","Logo Design","Art Concept"] },
-  { id:"ai-007", handle:"PhotoPolish", description:"Photo Editing et retouche avancée", website:"#", categories:["Photo Editing","Art Concept","Image Generation"] },
-  { id:"ai-008", handle:"MockUpLab", description:"Web Mockup et prototypes rapides", website:"#", categories:["Web Mockup","Website Creation","Design"] },
-  { id:"ai-009", handle:"ClipMaster", description:"Video Editing & Text-to-Video pour contenus", website:"#", categories:["Video Editing","Text-to-Video","Video Upscale"] },
-  { id:"ai-010", handle:"VoxForge", description:"Voice Generation et clonage vocal", website:"#", categories:["Voice Generation","Voice Cloning","Dubbing"] },
-  { id:"ai-011", handle:"AudioStudio", description:"Audio Mixing et Podcast Creation", website:"#", categories:["Audio Mixing","Podcast Creation","Audio Transcription"] },
-  { id:"ai-012", handle:"ScriptLab", description:"Scriptwriting et scénarisation pour vidéos", website:"#", categories:["Scriptwriting","Creative Writing","Article Writing"] },
-  { id:"ai-013", handle:"Summarize", description:"Text Summarization & correction rapide", website:"#", categories:["Text Summarization","Text Correction","Documentation"] },
-  { id:"ai-014", handle:"TutorPro", description:"Personal Tutor et Quiz & Test automatiques", website:"#", categories:["Personal Tutor","Quiz & Test","Student Performance"] },
-  { id:"ai-015", handle:"CodeBuddy", description:"Code Assistance & Automated Testing", website:"#", categories:["Code Assistance","Automated Testing","Website Creation"] },
-  { id:"ai-016", handle:"SecureNet", description:"Cybersécurité et détection de vulnérabilités", website:"#", categories:["Cybersecurity","Fraud Detection","Documentation"] },
-  { id:"ai-017", handle:"PricePilot", description:"Dynamic Pricing et Inventory Management", website:"#", categories:["Dynamic Pricing","Inventory Management","Sales Forecasting"] },
-  { id:"ai-018", handle:"RecoX", description:"Product Recommendation et personnalisation", website:"#", categories:["Product Recommendation","Customer Support","Marketing"] },
-  { id:"ai-019", handle:"AccountingAI", description:"Accounting et Financial Forecasting", website:"#", categories:["Accounting","Financial Forecasting","Investment Management"] },
-  { id:"ai-020", handle:"TraderBot", description:"Automated Trading et Investment Management", website:"#", categories:["Automated Trading","Investment Management","Fraud Detection"] },
-  { id:"ai-021", handle:"SEOPro", description:"Optimisation SEO & audits", website:"#", categories:["SEO","Market Analysis","Ad Campaign"] },
-  { id:"ai-022", handle:"SocialPilot", description:"Planification et publication Social Media", website:"#", categories:["Social Media","Copywriting","Ad Campaign"] },
-  { id:"ai-023", handle:"CourseMaker", description:"Création de cours et plateformes e-learning", website:"#", categories:["Course Creation","Personal Tutor","Documentation"] },
-  { id:"ai-024", handle:"InvoiceX", description:"Automatisation de la facturation et comptabilité", website:"#", categories:["Accounting","Automation","Business"] },
-  // add more if you want — all render at load
-];
+    menuBtn.addEventListener("click", toggleMenu);
+    overlay.addEventListener("click", closeMenu);
 
-/* 50 categories exactly like original (with "Toutes" first) */
-const CATEGORIES = [
-  "Toutes",
-  "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
-  "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
-  "Logo Design","Web Mockup","Photo Editing","Art Concept","Video Editing","Talking Avatar","Dubbing",
-  "Text-to-Video","Video Upscale","Voice Generation","Voice Cloning","Audio Mixing","Audio Transcription",
-  "Podcast Creation","Article Writing","Scriptwriting","Text Summarization","Text Correction","Creative Writing",
-  "Code Assistance","Automated Testing","Website Creation","Documentation","Cybersecurity","Dynamic Pricing",
-  "Sales Forecasting","Inventory Management","Customer Support","Product Recommendation","Course Creation",
-  "Personal Tutor","Quiz & Test","Student Performance","Accounting","Financial Forecasting","Fraud Detection",
-  "Automated Trading","Investment Management"
-];
+    function toggleMenu() {
+      sidebar.classList.toggle("open");
+      overlay.classList.toggle("active");
+      menuBtn.classList.toggle("active");
+    }
 
-/* 14 palettes (bgDark, bgLight, accent) - pro & minimal */
-const PALETTES = [
-  ["#050519","#0f1724","#7f5af0"],
-  ["#0b0f1a","#122131","#38bdf8"],
-  ["#0b0b0b","#1a1a1a","#9ca3ff"],
-  ["#071018","#102033","#00c2a8"],
-  ["#0f0c29","#2b1055","#ff7eb3"],
-  ["#08121a","#0f2a3a","#00a7ff"],
-  ["#091018","#142033","#8be38b"],
-  ["#0f1114","#24292e","#f6c343"],
-  ["#0a0810","#1b1024","#ff7a59"],
-  ["#08101a","#15324a","#6ee7b7"],
-  ["#0b0b12","#2a1f3a","#c084fc"],
-  ["#0a0a0a","#1e1e1e","#fef08a"],
-  ["#020024","#004e92","#00d4ff"],
-  ["#0e1114","#22262b","#ffd166"]
-];
+    function closeMenu() {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      menuBtn.classList.remove("active");
+    }
 
-/* keywords to generate hero & image placeholders per palette (business style) */
-const THEME_KEYWORDS = ["business startup","corporate office","technology industry","data analytics","innovation technology",
-  "business meeting","modern office","business abstract","company office","corporate team","corporate creative","finance business","tech network","business abstract"];
-
-/* DOM refs */
-const menuBtn = document.getElementById('menuBtn');
-const sidebar = document.getElementById('sidebar');
-const overlay = document.getElementById('overlay');
-const categoryList = document.getElementById('categoryList');
-const themeGrid = document.getElementById('themeGrid');
-const grid = document.getElementById('grid');
-const hero = document.getElementById('hero');
-
-/* Menu toggle */
-menuBtn.addEventListener('click', ()=> {
-  const open = sidebar.classList.toggle('open');
-  overlay.classList.toggle('active', open);
-  menuBtn.classList.toggle('active', open);
-  sidebar.setAttribute('aria-hidden', !open);
-});
-overlay.addEventListener('click', ()=> {
-  sidebar.classList.remove('open');
-  overlay.classList.remove('active');
-  menuBtn.classList.remove('active');
-  sidebar.setAttribute('aria-hidden', true);
-});
-
-/* Build categories (50) — clicking filters exactly like first code */
-(function buildCategories(){
-  categoryList.innerHTML = "";
-  CATEGORIES.forEach(cat => {
-    const li = document.createElement('li');
-    li.textContent = cat;
-    li.addEventListener('click', () => {
-      filterAndRender(cat);
-      // close sidebar
-      sidebar.classList.remove('open');
-      overlay.classList.remove('active');
-      menuBtn.classList.remove('active');
-      sidebar.setAttribute('aria-hidden', true);
+    window.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch("data.json");
+        const data = await res.json();
+        allData = Array.isArray(data) ? data : [data];
+        renderCategories();
+        showCards(allData);
+      } catch (err) {
+        grid.innerHTML = `<div style="color:red;font-weight:700;">Erreur de chargement des données</div>`;
+      }
     });
-    categoryList.appendChild(li);
-  });
-})();
 
-/* Build theme cards */
-(function buildThemes(){
-  themeGrid.innerHTML = "";
-  PALETTES.forEach((pal, idx) => {
-    const card = document.createElement('div'); card.className = 'theme-card';
-    const sw = document.createElement('div'); sw.className = 'swatches';
-    pal.forEach(c => { const s = document.createElement('div'); s.className='sw'; s.style.background = c; sw.appendChild(s); });
-    const label = document.createElement('div'); label.className = 'theme-label'; label.textContent = `Thème ${idx+1}`;
-    card.appendChild(sw); card.appendChild(label);
-    card.addEventListener('click', ()=> applyTheme(idx));
-    themeGrid.appendChild(card);
-  });
-})();
+    function renderCategories() {
+      categoryList.innerHTML = "";
+      const allLi = document.createElement("li");
+      allLi.textContent = "Toutes les catégories";
+      allLi.addEventListener("click", () => {
+        activeCategory = "Tous";
+        showCards(allData);
+        closeMenu();
+      });
+      categoryList.appendChild(allLi);
 
-/* Render ALL IA at once (no lazy loading) */
-function renderAll(data){
-  grid.innerHTML = "";
-  const frag = document.createDocumentFragment();
-  data.forEach((item, i) => {
-    const card = document.createElement('article'); card.className = 'card'; card.dataset.idx = i;
-
-    const imgwrap = document.createElement('div'); imgwrap.className = 'imgwrap';
-    const img = document.createElement('img'); img.alt = item.handle || "IA image"; img.draggable = false;
-    // we'll create a themed SVG as data URL for guaranteed display and easy recolor
-    img.src = svgDataUrl(item.handle || "IA", i, 0); // initial palette 0 used inside; applyTheme will update
-    const tint = document.createElement('div'); tint.className = 'img-tint';
-
-    imgwrap.appendChild(img); imgwrap.appendChild(tint);
-
-    const header = document.createElement('div'); header.className = 'card-header';
-    header.innerHTML = `<div class="title">${escapeHtml(item.handle || 'Sans nom')}</div><div class="meta">${escapeHtml(item.id || '')}</div>`;
-
-    const body = document.createElement('div'); body.className = 'card-body'; body.textContent = item.description || '(Pas de description)';
-
-    const footer = document.createElement('a'); footer.className = 'card-footer'; footer.textContent = 'Visiter le site'; footer.href = item.website || '#'; footer.target = '_blank'; footer.rel = 'noopener noreferrer';
-
-    card.appendChild(imgwrap); card.appendChild(header); card.appendChild(body); card.appendChild(footer);
-    frag.appendChild(card);
-  });
-  grid.appendChild(frag);
-  applyTheme(0); // apply initial theme to tint all images and hero
-}
-
-/* Create an SVG data URL for placeholder image, themed by palette index (but initial idx=0 here) */
-function svgDataUrl(title, itemIndex, paletteIndex){
-  const pal = PALETTES[paletteIndex] || PALETTES[0];
-  const a = pal[2]; // accent
-  const b = pal[1]; // bgLight
-  // create simple gradient + centered handle text
-  const w = 1200, h = 800;
-  // Ensure text is safe
-  const safe = escapeHtml(title).slice(0, 30);
-  const svg =
-    `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'>
-      <defs>
-        <linearGradient id='g${itemIndex}' x1='0' x2='1' y1='0' y2='1'>
-          <stop offset='0' stop-color='${a}' stop-opacity='0.85'/>
-          <stop offset='1' stop-color='${b}' stop-opacity='0.75'/>
-        </linearGradient>
-      </defs>
-      <rect width='100%' height='100%' fill='url(#g${itemIndex})'/>
-      <g fill='rgba(255,255,255,0.06)'>
-        <rect x='60' y='60' width='300' height='180' rx='20' />
-        <rect x='60' y='270' width='200' height='120' rx='12' />
-      </g>
-      <text x='50%' y='50%' font-family='Inter, Poppins, sans-serif' font-size='64' fill='white' text-anchor='middle' dominant-baseline='central' font-weight='700'>${safe}</text>
-    </svg>`;
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-/* Filtering: like original — matches categories array exact (case-insensitive) or checks text in description/handle */
-function filterAndRender(cat){
-  if(cat === "Toutes"){
-    renderAll(ALL_DATA);
-    return;
-  }
-  const lower = cat.toLowerCase();
-  const filtered = ALL_DATA.filter(item => {
-    if(Array.isArray(item.categories) && item.categories.some(c => c.toLowerCase() === lower)) return true;
-    if((item.description||"").toLowerCase().includes(lower)) return true;
-    if((item.handle||"").toLowerCase().includes(lower)) return true;
-    return false;
-  });
-  renderAll(filtered);
-}
-
-/* Theme application: update CSS vars, hero, tints, and regenerate placeholder images for items without custom image */
-function applyTheme(index){
-  const pal = PALETTES[index] || PALETTES[0];
-  const bgDark = pal[0], bgLight = pal[1], accent = pal[2];
-  const accent2 = lightenHex(accent, 18);
-  const cardAccent = hexToRgba(accent, 0.12);
-
-  // update CSS vars
-  document.documentElement.style.setProperty('--bg1', bgDark);
-  document.documentElement.style.setProperty('--bg2', bgLight);
-  document.documentElement.style.setProperty('--accent', accent);
-  document.documentElement.style.setProperty('--accent2', accent2);
-  document.documentElement.style.setProperty('--card-accent', cardAccent);
-  document.documentElement.style.setProperty('--text', '#f5f7fb');
-
-  // hero image (businessy query)
-  const kw = THEME_KEYWORDS[index] || 'business';
-  hero.style.backgroundImage = `url("https://source.unsplash.com/1600x900/?${encodeURIComponent(kw)}")`;
-
-  // update cards: tint overlay and footer colors; regenerate images (SVG dataURL) so visuals match theme
-  const cards = document.querySelectorAll('.card');
-  cards.forEach((c, i) => {
-    c.style.borderColor = hexToRgba(accent, 0.06);
-    c.style.boxShadow = `0 12px 40px ${hexToRgba(accent, 0.12)}`;
-
-    const tint = c.querySelector('.img-tint');
-    if(tint){
-      const angle = 120 + (i % 6) * 10;
-      const g = `linear-gradient(${angle}deg, ${hexToRgba(accent,0.48)} 0%, ${hexToRgba(accent2,0.28)} 100%)`;
-      tint.style.background = g;
-      tint.style.opacity = 0.88;
+      categories.forEach(cat => {
+        const li = document.createElement("li");
+        li.textContent = cat;
+        li.addEventListener("click", () => {
+          activeCategory = cat;
+          filterByCategory(cat);
+          closeMenu();
+        });
+        categoryList.appendChild(li);
+      });
     }
 
-    const footer = c.querySelector('.card-footer');
-    if(footer){
-      footer.style.background = hexToRgba(accent, 0.12);
-      footer.style.color = bgLight;
+    function filterByCategory(keyword) {
+      const filtered = allData.filter(item =>
+        (item.description || "").toLowerCase().includes(keyword.toLowerCase())
+      );
+      showCards(filtered);
     }
 
-    // regenerate image for items: always regenerate SVG to match theme for consistent look (guaranteed to display)
-    const img = c.querySelector('img');
-    const title = (ALL_DATA[c.dataset.idx] && ALL_DATA[c.dataset.idx].handle) ? ALL_DATA[c.dataset.idx].handle : `IA-${i}`;
-    img.src = svgDataUrl(title, i, index); // uses palette index for gradient inside SVG
-    img.style.filter = 'contrast(0.98) saturate(0.95)';
-  });
+    function showCards(data) {
+      grid.innerHTML = "";
+      data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-  // header color
-  const headerTitle = document.querySelector('header h1');
-  if(headerTitle){
-    headerTitle.style.color = accent;
-    headerTitle.style.textShadow = `0 8px 34px ${hexToRgba(accent,0.14)}`;
-  }
-}
+        const img = document.createElement("img");
+        img.src = item.image || "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?auto=format&fit=crop&w=800&q=80";
+        img.alt = item.handle || "image IA";
 
-/* ---------- Helpers ---------- */
-function hexToRgb(hex){
-  hex = hex.replace('#','');
-  if(hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
-  const bigint = parseInt(hex,16);
-  return [(bigint>>16)&255, (bigint>>8)&255, bigint&255];
-}
-function hexToRgba(hex, a=1){
-  const [r,g,b] = hexToRgb(hex);
-  return `rgba(${r}, ${g}, ${b}, ${a})`;
-}
-function lightenHex(hex, pct){
-  const [r,g,b] = hexToRgb(hex);
-  const amt = Math.round(255 * (pct/100));
-  const nr = Math.min(255, r + amt), ng = Math.min(255, g + amt), nb = Math.min(255, b + amt);
-  return '#' + ((1<<24) + (nr<<16) + (ng<<8) + nb).toString(16).slice(1);
-}
-function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+        const header = document.createElement("div");
+        header.className = "card-header";
+        header.innerHTML = `<h3 class="card-title">${escapeHtml(item.handle || "Sans nom")}</h3>
+                            <div class="card-meta">${escapeHtml(item.id || "?")}</div>`;
 
-/* Initial render: render all IA at once (as requested) */
-document.addEventListener('DOMContentLoaded', () => {
-  renderAll(ALL_DATA);      // all items visible immediately
-  applyTheme(0);           // initial theme
-});
-</script>
+        const body = document.createElement("div");
+        body.className = "card-body";
+        body.textContent = item.description || "(Pas de description)";
+
+        const footer = document.createElement("a");
+        footer.className = "card-footer";
+        footer.href = item.website || "#";
+        footer.target = "_blank";
+        footer.textContent = "Visiter le site";
+
+        card.appendChild(img);
+        card.appendChild(header);
+        card.appendChild(body);
+        card.appendChild(footer);
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+  </script>
 </body>
 </html>
