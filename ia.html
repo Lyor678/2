@@ -9,18 +9,18 @@
       --bg: #f4f4f4;
       --text: #1a1a1a;
       --accent: #2f2f2f;
-      --card-bg: rgba(255, 255, 255, 0.25);
-      --shadow: rgba(0, 0, 0, 0.1);
-      --glass-border: rgba(255,255,255,0.4);
+      --card-bg: rgba(255,255,255,0.25);
+      --glass-border: rgba(255,255,255,0.3);
+      --shadow: rgba(0,0,0,0.1);
     }
 
     [data-theme="dark"] {
-      --bg: #0e0e10;
-      --text: #eaeaea;
+      --bg: #0c0c0f;
+      --text: #e5e5e5;
       --accent: #d1d1d1;
-      --card-bg: rgba(40, 40, 42, 0.4);
-      --shadow: rgba(0, 0, 0, 0.5);
-      --glass-border: rgba(255,255,255,0.1);
+      --card-bg: rgba(25,25,28,0.55);
+      --glass-border: rgba(255,255,255,0.08);
+      --shadow: rgba(0,0,0,0.5);
     }
 
     * { box-sizing: border-box; }
@@ -32,7 +32,7 @@
       color: var(--text);
       overflow-x: hidden;
       min-height: 100vh;
-      transition: background 0.4s ease, color 0.4s ease;
+      transition: background 0.5s ease, color 0.5s ease;
     }
 
     header {
@@ -49,7 +49,6 @@
       align-items: center;
       justify-content: center;
       z-index: 10;
-      transition: background 0.3s ease;
     }
 
     h1 {
@@ -57,6 +56,7 @@
       font-size: 22px;
       font-weight: 600;
       color: var(--accent);
+      letter-spacing: 0.5px;
     }
 
     .menu-btn {
@@ -96,7 +96,6 @@
       color: var(--text);
       transition: transform 0.3s ease;
     }
-
     .theme-toggle:hover { transform: scale(1.1); }
 
     .sidebar {
@@ -152,23 +151,31 @@
     .overlay.active { opacity: 1; visibility: visible; }
 
     .search-container {
-      position: sticky;
-      top: 70px;
       display: flex;
       justify-content: center;
-      padding: 20px;
-      z-index: 8;
-      background: var(--bg);
+      padding: 24px;
+      margin-top: 90px;
+      opacity: 0;
+      transform: translateX(-100%);
+      animation: slideIn 1.2s ease forwards;
+      animation-delay: 0.4s;
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
     }
 
     .search-bar {
       width: 80%;
       max-width: 600px;
       padding: 12px 18px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 1px solid var(--glass-border);
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(18px);
       color: var(--text);
       font-size: 15px;
       outline: none;
@@ -177,11 +184,11 @@
     }
 
     .search-bar:focus {
-      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
     }
 
     main {
-      margin-top: 120px;
+      margin-top: 40px;
       padding: 0 24px;
     }
 
@@ -198,16 +205,16 @@
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       box-shadow: 0 8px 24px var(--shadow);
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(18px);
       overflow: hidden;
-      transition: transform .3s ease, box-shadow .3s ease, background .3s ease;
+      transition: transform .3s ease, box-shadow .3s ease;
       display: flex;
       flex-direction: column;
     }
 
     .card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.3);
     }
 
     .card img {
@@ -270,7 +277,7 @@
   </nav>
 
   <div class="search-container">
-    <input id="searchBar" type="text" class="search-bar" placeholder="Rechercher une IA (ex: free business, image, etc.)...">
+    <input id="searchBar" type="text" class="search-bar" placeholder="🔍 Rechercher une IA (ex: business, free, image...)">
   </div>
 
   <main>
@@ -377,7 +384,7 @@
         card.className = "card";
 
         const img = document.createElement("img");
-        img.src = "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=900&q=80";
+        img.src = "https://cdn.pixabay.com/photo/2023/03/08/11/56/artificial-intelligence-7837412_1280.jpg";
         img.alt = "IA";
 
         const header = document.createElement("div");
