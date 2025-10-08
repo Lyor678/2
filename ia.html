@@ -34,7 +34,7 @@
       transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* Animation d’entrée */
+    /* Animation entrée */
     .search-container {
       width: 100%;
       display: flex;
@@ -155,8 +155,8 @@
       border-radius: 18px;
       padding: 1px;
       background: linear-gradient(120deg, transparent, var(--led), transparent);
-      -webkit-mask: 
-        linear-gradient(#fff 0 0) content-box, 
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -247,15 +247,17 @@
 
     let data = [];
 
-    // Charger les IA depuis data.json
-    fetch("data.json")
-      .then(res => res.json())
-      .then(json => {
-        data = json;
+    // Charger et afficher les IA
+    async function loadData() {
+      try {
+        const res = await fetch("data.json");
+        data = await res.json();
         displayIA(data);
         setupCategories();
-      })
-      .catch(err => console.error("Erreur chargement data.json :", err));
+      } catch (err) {
+        console.error("Erreur chargement data.json :", err);
+      }
+    }
 
     function setupCategories() {
       categoryList.innerHTML = "";
@@ -312,6 +314,9 @@
       document.body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
       themeToggle.textContent = current === "dark" ? "☀️" : "🌙";
     };
+
+    // Charger les IA au démarrage
+    loadData();
   </script>
 </body>
 </html>
