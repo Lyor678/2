@@ -12,7 +12,6 @@
       --glass-border: rgba(255, 255, 255, 0.1);
       --shadow: rgba(0, 0, 0, 0.5);
       --card-bg: rgba(255, 255, 255, 0.06);
-      --accent: #aaa;
     }
 
     [data-theme="light"] {
@@ -22,7 +21,6 @@
       --glass-border: rgba(0, 0, 0, 0.1);
       --shadow: rgba(0, 0, 0, 0.1);
       --card-bg: rgba(255, 255, 255, 0.9);
-      --accent: #444;
     }
 
     body {
@@ -71,7 +69,7 @@
       position: fixed;
       top: 20px;
       left: 20px;
-      z-index: 10;
+      z-index: 100;
       background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: 12px;
@@ -107,6 +105,7 @@
       transition: left 0.4s ease;
       padding: 80px 15px 15px;
       overflow-y: auto;
+      z-index: 99;
     }
 
     .sidebar.open {
@@ -132,6 +131,7 @@
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 20px;
       padding: 100px 40px;
+      z-index: 1;
     }
 
     .card {
@@ -205,6 +205,7 @@
       backdrop-filter: blur(18px);
       box-shadow: 0 4px 12px var(--shadow);
       transition: transform 0.3s ease;
+      z-index: 100;
     }
 
     .theme-toggle:hover {
@@ -232,27 +233,33 @@
   <div class="grid" id="iaGrid"></div>
 
   <script>
-    const data = [
-      { name: "ChatGPT", desc: "Assistant IA avancé pour le texte et le code.", category: "Business, Free, Writing" },
-      { name: "Midjourney", desc: "Génère des images avec l'IA.", category: "Art, Design, Image" },
-      { name: "Claude", desc: "IA conversationnelle pour entreprise.", category: "Business, Chat, Writing" },
-      { name: "Runway", desc: "Outils IA pour la vidéo.", category: "Video, Creation, Pro" },
-      { name: "Perplexity", desc: "Moteur de recherche IA avancé.", category: "Search, Free, Business" }
-    ];
-
     const iaGrid = document.getElementById("iaGrid");
     const categoryList = document.getElementById("categoryList");
     const searchBar = document.getElementById("searchBar");
 
-    const categories = [...new Set(data.flatMap(d => d.category.split(",").map(c => c.trim())))];
+    let data = [];
 
-    categories.forEach(cat => {
-      const div = document.createElement("div");
-      div.classList.add("category");
-      div.textContent = cat;
-      div.onclick = () => filterIA(cat);
-      categoryList.appendChild(div);
-    });
+    // Charger les IA depuis data.json
+    fetch("data.json")
+      .then(res => res.json())
+      .then(json => {
+        data = json;
+        displayIA(data);
+        setupCategories(data);
+      })
+      .catch(err => console.error("Erreur chargement data.json :", err));
+
+    function setupCategories(data) {
+      const categories = [...new Set(data.flatMap(d => d.category.split(",").map(c => c.trim())))];
+      categoryList.innerHTML = "";
+      categories.forEach(cat => {
+        const div = document.createElement("div");
+        div.classList.add("category");
+        div.textContent = cat;
+        div.onclick = () => filterIA(cat);
+        categoryList.appendChild(div);
+      });
+    }
 
     function displayIA(items) {
       iaGrid.innerHTML = "";
@@ -260,7 +267,7 @@
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <img src="https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg" alt="IA">
+          <img src="${item.image || 'https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg'}" alt="IA">
           <div class="card-content">
             <h3>${item.name}</h3>
             <p>${item.desc}</p>
@@ -297,8 +304,6 @@
       document.body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
       themeToggle.textContent = current === "dark" ? "☀️" : "🌙";
     };
-
-    displayIA(data);
   </script>
 </body>
 </html>
