@@ -1,237 +1,239 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlixAI Pro — IA Explorer</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FlixAI — Découvrez les IA du futur</title>
   <style>
     :root {
-      --bg: #0d0d0d;
-      --text: #e5e5e5;
-      --glass: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --shadow: rgba(0, 0, 0, 0.6);
-      --accent: #9ca3af;
+      font-family: "Poppins", system-ui, sans-serif;
+      --bg-dark: #0b0f1a;
+      --accent: #38bdf8;
+      --card-bg: rgba(255,255,255,0.05);
       --led: rgba(220,220,220,0.6);
-    }
-
-    [data-theme="light"] {
-      --bg: #f5f5f5;
-      --text: #1a1a1a;
-      --glass: rgba(255, 255, 255, 0.8);
-      --glass-border: rgba(0, 0, 0, 0.08);
-      --shadow: rgba(0, 0, 0, 0.1);
-      --accent: #4b5563;
-      --led: rgba(180,180,180,0.5);
     }
 
     body {
       margin: 0;
-      font-family: "Inter", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      padding: 0;
+      background: radial-gradient(circle at top left, #0f172a 0%, #0b0f1a 100%);
+      color: #f8fafc;
+      min-height: 100vh;
       overflow-x: hidden;
-      transition: background 0.4s ease, color 0.4s ease;
+      position: relative;
+      font-family: "Poppins", sans-serif;
     }
 
-    /* Animation entrée */
-    .search-container {
+    /* Fond animé */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(600px at 10% 20%, rgba(56,189,248,0.15), transparent),
+                  radial-gradient(800px at 90% 80%, rgba(168,85,247,0.1), transparent);
+      animation: gradientShift 8s ease-in-out infinite alternate;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 0%, 100% 100%; }
+      100% { background-position: 100% 100%, 0% 0%; }
+    }
+
+    header {
+      position: fixed;
+      top: 0; left: 0;
       width: 100%;
       display: flex;
+      align-items: center;
       justify-content: center;
-      margin: 30px 0;
-      animation: slideIn 1.3s ease forwards;
+      padding: 16px 24px;
+      background: rgba(15,23,42,0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      z-index: 10;
     }
 
-    @keyframes slideIn {
-      0% { transform: translateX(-100%); opacity: 0; }
-      100% { transform: translateX(0); opacity: 1; }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin: 0;
+      text-shadow: 0 0 12px rgba(56,189,248,0.6);
     }
 
-    .search-bar {
-      width: 70%;
-      max-width: 600px;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 14px;
-      border: 1px solid var(--glass-border);
-      background: var(--glass);
-      color: var(--text);
-      backdrop-filter: blur(18px);
-      outline: none;
-      transition: all 0.3s ease;
-    }
-
-    .search-bar:focus {
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
-    }
-
-    /* Menu burger */
-    .menu {
-      position: fixed;
-      top: 20px;
+    .menu-btn {
+      position: absolute;
       left: 20px;
-      z-index: 100;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 10px;
-      backdrop-filter: blur(18px);
+      background: none;
+      border: none;
       cursor: pointer;
-      box-shadow: 0 4px 12px var(--shadow);
-      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 28px;
+      height: 20px;
+      z-index: 20;
     }
 
-    .menu:hover { transform: scale(1.05); }
-
-    .menu span {
+    .menu-btn span {
       display: block;
-      width: 25px;
       height: 3px;
-      background: var(--text);
-      margin: 5px 0;
-      border-radius: 2px;
+      width: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      transition: all .3s ease;
     }
 
-    /* Sidebar catégories */
+    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(8px);}
+    .menu-btn.active span:nth-child(2){opacity:0;}
+    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-8px);}
+
     .sidebar {
       position: fixed;
-      top: 0;
-      left: -260px;
-      width: 240px;
+      top: 0; left: -300px;
+      width: 260px;
       height: 100%;
-      background: var(--glass);
-      border-right: 1px solid var(--glass-border);
-      backdrop-filter: blur(20px);
-      transition: left 0.4s ease;
-      padding: 80px 15px 15px;
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.7);
+      transition: left .4s ease;
+      z-index: 15;
+      padding-top: 80px;
       overflow-y: auto;
-      z-index: 200;
     }
 
     .sidebar.open { left: 0; }
 
-    .category {
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 8px;
-      cursor: pointer;
-      color: var(--text);
-      transition: background 0.3s;
+    .sidebar h2 {
+      font-size: 18px;
+      color: var(--accent);
+      margin: 10px 24px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 6px;
     }
 
-    .category:hover {
-      background: rgba(255,255,255,0.1);
+    .sidebar ul { list-style:none; padding:0; margin:0; }
+    .sidebar li {
+      padding:10px 24px;
+      cursor:pointer;
+      color:#e2e8f0;
+      border-left:4px solid transparent;
+      transition:all .3s ease;
+    }
+    .sidebar li:hover {
+      background:rgba(56,189,248,0.1);
+      border-left:4px solid var(--accent);
+      color:var(--accent);
     }
 
-    /* Cartes IA */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 20px;
-      padding: 100px 40px;
+    .overlay {
+      position:fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.5);
+      backdrop-filter:blur(2px);
+      opacity:0; visibility:hidden;
+      transition:opacity .4s ease;
+      z-index:5;
+    }
+    .overlay.active {opacity:1; visibility:visible;}
+
+    main {
+      margin-top: 90px;
+      position: relative;
       z-index: 1;
     }
 
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      margin: 40px auto;
+      max-width: 1400px;
+      padding: 0 24px;
+    }
+
     .card {
-      position: relative;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
+      background: var(--card-bg);
       border-radius: 18px;
-      box-shadow: 0 8px 24px var(--shadow);
-      backdrop-filter: blur(18px);
       overflow: hidden;
-      transition: transform .3s ease, box-shadow .3s ease;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      transform: translateY(0);
+      transition: transform .4s ease, box-shadow .4s ease;
+      backdrop-filter: blur(10px);
+      position: relative;
+      padding: 18px;
     }
 
-    /* LED autour des cartes */
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 18px;
-      padding: 1px;
-      background: linear-gradient(120deg, transparent, var(--led), transparent);
-      -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
+    /* LED tout autour */
+    .card::after {
+      content:"";
+      position:absolute;
+      top:0; left:0; right:0; bottom:0;
+      border-radius:18px;
+      border: 1px solid var(--led);
+      opacity:0;
+      transition: opacity 0.4s;
+      pointer-events:none;
     }
-
-    .card:hover::before {
-      opacity: 1;
-    }
+    .card:hover::after { opacity:1; }
 
     .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(56,189,248,0.3);
     }
 
-    .card-content {
-      padding: 0;
+    .card-header h3 { margin:0; font-size:18px; }
+    .card-meta { font-size:13px; color:#94a3b8; margin-top:4px; }
+    .card-body { font-size:14px; color:#e2e8f0; margin:8px 0; }
+    .card-footer {
+      display:block; text-align:center; font-weight:500;
+      padding:12px 0; background: rgba(56,189,248,0.08);
+      color: var(--accent); text-decoration:none;
+      transition: background .3s ease;
     }
+    .card-footer:hover { background: rgba(56,189,248,0.2); }
 
-    .card h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-
-    .card p {
+    footer {
+      text-align: center;
       font-size: 14px;
-      opacity: 0.8;
-    }
-
-    /* Bouton thème */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      padding: 10px 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      backdrop-filter: blur(18px);
-      box-shadow: 0 4px 12px var(--shadow);
-      transition: transform 0.3s ease;
-      z-index: 100;
-    }
-
-    .theme-toggle:hover {
-      transform: scale(1.1);
+      color: #94a3b8;
+      padding: 30px 0 40px;
     }
   </style>
 </head>
+<body>
+  <div class="overlay" id="overlay"></div>
 
-<body data-theme="dark">
-  <div class="menu" id="menuBtn">
-    <span></span><span></span><span></span>
-  </div>
+  <header>
+    <button class="menu-btn" id="menuBtn">
+      <span></span><span></span><span></span>
+    </button>
+    <h1>FlixAI</h1>
+  </header>
 
-  <div class="theme-toggle" id="themeToggle">🌙</div>
+  <nav class="sidebar" id="sidebar">
+    <h2>Catégories</h2>
+    <ul id="categoryList"></ul>
+  </nav>
 
-  <div class="sidebar" id="sidebar">
-    <h3>Catégories</h3>
-    <div id="categoryList"></div>
-  </div>
+  <main>
+    <div id="grid" class="grid"></div>
+  </main>
 
-  <div class="search-container">
-    <input type="text" class="search-bar" id="searchBar" placeholder="Rechercher une IA...">
-  </div>
-
-  <div class="grid" id="iaGrid"></div>
+  <footer>
+    <div>FlixAI — Découvrez et explorez toutes les IA ✨</div>
+  </footer>
 
   <script>
-    const iaGrid = document.getElementById("iaGrid");
-    const categoryList = document.getElementById("categoryList");
-    const searchBar = document.getElementById("searchBar");
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const grid = document.getElementById('grid');
+    const categoryList = document.getElementById('categoryList');
 
     const categories = [
       "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
@@ -245,78 +247,110 @@
       "Automated Trading","Investment Management"
     ];
 
-    let data = [];
+    let allData = [];
+    let activeCategory = "Tous";
 
-    // Charger et afficher les IA
-    async function loadData() {
-      try {
-        const res = await fetch("data.json");
-        data = await res.json();
-        displayIA(data);
-        setupCategories();
-      } catch (err) {
-        console.error("Erreur chargement data.json :", err);
-      }
-    }
-
-    function setupCategories() {
-      categoryList.innerHTML = "";
-      categories.forEach(cat => {
-        const div = document.createElement("div");
-        div.classList.add("category");
-        div.textContent = cat;
-        div.onclick = () => filterIA(cat);
-        categoryList.appendChild(div);
-      });
-    }
-
-    function displayIA(items) {
-      iaGrid.innerHTML = "";
-      items.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `
-          <div class="card-content">
-            <h3>${item.name || "IA sans nom"}</h3>
-            <p>${item.desc || "Aucune description disponible."}</p>
-          </div>
-        `;
-        iaGrid.appendChild(card);
-      });
-    }
-
-    function filterIA(keyword) {
-      const filtered = data.filter(i =>
-        (i.desc && i.desc.toLowerCase().includes(keyword.toLowerCase())) ||
-        (i.name && i.name.toLowerCase().includes(keyword.toLowerCase()))
-      );
-      displayIA(filtered);
-    }
-
-    searchBar.addEventListener("input", e => {
-      const value = e.target.value.toLowerCase();
-      const filtered = data.filter(i =>
-        (i.name && i.name.toLowerCase().includes(value)) ||
-        (i.desc && i.desc.toLowerCase().includes(value))
-      );
-      displayIA(filtered);
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+      overlay.classList.toggle("active");
+      menuBtn.classList.toggle("active");
     });
 
-    // Sidebar toggle
-    const menuBtn = document.getElementById("menuBtn");
-    const sidebar = document.getElementById("sidebar");
-    menuBtn.onclick = () => sidebar.classList.toggle("open");
+    overlay.addEventListener("click", () => {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      menuBtn.classList.remove("active");
+    });
 
-    // Theme toggle
-    const themeToggle = document.getElementById("themeToggle");
-    themeToggle.onclick = () => {
-      const current = document.body.getAttribute("data-theme");
-      document.body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
-      themeToggle.textContent = current === "dark" ? "☀️" : "🌙";
-    };
+    window.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const res = await fetch("data.json");
+        if (!res.ok) throw new Error("Impossible de charger data.json");
+        const data = await res.json();
+        allData = Array.isArray(data) ? data : [data];
+        renderCategories();
+        showCards(allData);
+      } catch (err) {
+        grid.innerHTML = `<div style="color:#f87171;font-weight:700">Erreur: ${escapeHtml(err.message || err)}</div>`;
+      }
+    });
 
-    // Charger les IA au démarrage
-    loadData();
+    function renderCategories() {
+      categoryList.innerHTML = "";
+      const allLi = document.createElement("li");
+      allLi.textContent = "Toutes les catégories";
+      allLi.addEventListener("click", () => {
+        activeCategory = "Tous";
+        filterAndRender();
+        closeMenu();
+      });
+      categoryList.appendChild(allLi);
+
+      categories.forEach(cat => {
+        const li = document.createElement("li");
+        li.textContent = cat;
+        li.addEventListener("click", () => {
+          activeCategory = cat;
+          filterAndRender();
+          closeMenu();
+        });
+        categoryList.appendChild(li);
+      });
+    }
+
+    function closeMenu() {
+      sidebar.classList.remove("open");
+      overlay.classList.remove("active");
+      menuBtn.classList.remove("active");
+    }
+
+    function filterAndRender() {
+      let filtered = [...allData];
+      if (activeCategory !== "Tous") {
+        filtered = filtered.filter(item =>
+          (item.description || "").toLowerCase().includes(activeCategory.toLowerCase()) ||
+          (item.handle || "").toLowerCase().includes(activeCategory.toLowerCase())
+        );
+      }
+      showCards(filtered);
+    }
+
+    function showCards(data) {
+      grid.innerHTML = "";
+      data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        header.innerHTML = `<h3>${escapeHtml(item.handle || "Sans nom")}</h3>
+                            <div class="card-meta">${escapeHtml(item.id || "?")}</div>`;
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+        body.textContent = item.description || "(Pas de description)";
+
+        const footer = document.createElement("a");
+        footer.className = "card-footer";
+        footer.href = item.website || "#";
+        footer.target = "_blank";
+        footer.textContent = "Visiter le site";
+
+        card.appendChild(header);
+        card.appendChild(body);
+        card.appendChild(footer);
+
+        grid.appendChild(card);
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
   </script>
 </body>
 </html>
