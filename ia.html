@@ -201,7 +201,6 @@
     }
 
     .card {
-      position: relative; /* pour LED */
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
@@ -216,26 +215,6 @@
     .card:hover {
       transform: translateY(-6px);
       box-shadow: 0 12px 28px rgba(0,0,0,0.3);
-    }
-
-    /* LED gris clair sous la carte */
-    .card::after {
-      content: "";
-      position: absolute;
-      bottom: -6px;
-      left: 50%;
-      transform: translateX(-50%) scaleX(0);
-      width: 60%;
-      height: 4px;
-      background: rgba(200,200,200,0.6);
-      border-radius: 2px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      opacity: 0;
-    }
-
-    .card:hover::after {
-      transform: translateX(-50%) scaleX(1);
-      opacity: 1;
     }
 
     .card img {
@@ -389,55 +368,4 @@
     });
 
     function filterByKeyword(query) {
-      if (!query) return showCards(allData);
-      const filtered = allData.filter(item => {
-        const text = (item.handle + " " + item.description).toLowerCase();
-        return text.includes(query.toLowerCase());
-      });
-      showCards(filtered);
-    }
-
-    function showCards(data) {
-      grid.innerHTML = "";
-      data.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const img = document.createElement("img");
-        img.src = item.image || "https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg";
-        img.alt = "IA";
-
-        const header = document.createElement("div");
-        header.className = "card-header";
-        header.innerHTML = `<h3 class="card-title">${escapeHtml(item.handle || "Sans nom")}</h3>
-                            <div class="card-meta">${escapeHtml(item.id || "?")}</div>`;
-
-        const body = document.createElement("div");
-        body.className = "card-body";
-        body.textContent = item.description || "(Pas de description)";
-
-        const footer = document.createElement("a");
-        footer.className = "card-footer";
-        footer.href = item.website || "#";
-        footer.target = "_blank";
-        footer.textContent = "Visiter le site";
-
-        card.appendChild(img);
-        card.appendChild(header);
-        card.appendChild(body);
-        card.appendChild(footer);
-
-        grid.appendChild(card);
-      });
-    }
-
-    function escapeHtml(s) {
-      return String(s)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-  </script>
-</body>
-</html>
+      if (!query
