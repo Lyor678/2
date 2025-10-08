@@ -3,24 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aixploria IA - Pro Edition</title>
+  <title>FlixAI Pro — IA Explorer</title>
   <style>
     :root {
-      --bg: #0f0f0f;
-      --text: #eaeaea;
+      --bg: #0d0d0d;
+      --text: #e5e5e5;
       --glass: rgba(255, 255, 255, 0.05);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --shadow: rgba(0, 0, 0, 0.5);
-      --card-bg: rgba(255, 255, 255, 0.06);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --shadow: rgba(0, 0, 0, 0.6);
+      --accent: #9ca3af;
+      --led: rgba(220,220,220,0.6);
     }
 
     [data-theme="light"] {
-      --bg: #f4f4f4;
+      --bg: #f5f5f5;
       --text: #1a1a1a;
       --glass: rgba(255, 255, 255, 0.8);
-      --glass-border: rgba(0, 0, 0, 0.1);
+      --glass-border: rgba(0, 0, 0, 0.08);
       --shadow: rgba(0, 0, 0, 0.1);
-      --card-bg: rgba(255, 255, 255, 0.9);
+      --accent: #4b5563;
+      --led: rgba(180,180,180,0.5);
     }
 
     body {
@@ -32,7 +34,7 @@
       transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* Barre de recherche */
+    /* Animation d’entrée */
     .search-container {
       width: 100%;
       display: flex;
@@ -64,7 +66,7 @@
       box-shadow: 0 0 10px rgba(255,255,255,0.1);
     }
 
-    /* Menu */
+    /* Menu burger */
     .menu {
       position: fixed;
       top: 20px;
@@ -80,9 +82,7 @@
       transition: transform 0.3s ease;
     }
 
-    .menu:hover {
-      transform: scale(1.05);
-    }
+    .menu:hover { transform: scale(1.05); }
 
     .menu span {
       display: block;
@@ -93,6 +93,7 @@
       border-radius: 2px;
     }
 
+    /* Sidebar catégories */
     .sidebar {
       position: fixed;
       top: 0;
@@ -105,12 +106,10 @@
       transition: left 0.4s ease;
       padding: 80px 15px 15px;
       overflow-y: auto;
-      z-index: 99;
+      z-index: 200;
     }
 
-    .sidebar.open {
-      left: 0;
-    }
+    .sidebar.open { left: 0; }
 
     .category {
       padding: 10px;
@@ -136,7 +135,7 @@
 
     .card {
       position: relative;
-      background: var(--card-bg);
+      background: var(--glass);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
       box-shadow: 0 8px 24px var(--shadow);
@@ -145,21 +144,29 @@
       transition: transform .3s ease, box-shadow .3s ease;
       display: flex;
       flex-direction: column;
+      padding: 20px;
     }
 
-    .card::after {
+    /* LED autour des cartes */
+    .card::before {
       content: "";
       position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80%;
-      height: 8px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(200,200,200,0.4) 0%, rgba(255,255,255,0) 70%);
+      inset: 0;
+      border-radius: 18px;
+      padding: 1px;
+      background: linear-gradient(120deg, transparent, var(--led), transparent);
+      -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
       opacity: 0;
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      filter: blur(8px);
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
     }
 
     .card:hover {
@@ -167,19 +174,8 @@
       box-shadow: 0 12px 28px rgba(0,0,0,0.3);
     }
 
-    .card:hover::after {
-      opacity: 1;
-      transform: translateX(-50%) scale(1.05);
-    }
-
-    .card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-    }
-
     .card-content {
-      padding: 16px;
+      padding: 0;
     }
 
     .card h3 {
@@ -237,6 +233,18 @@
     const categoryList = document.getElementById("categoryList");
     const searchBar = document.getElementById("searchBar");
 
+    const categories = [
+      "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
+      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
+      "Logo Design","Web Mockup","Photo Editing","Art Concept","Video Editing","Talking Avatar","Dubbing",
+      "Text-to-Video","Video Upscale","Voice Generation","Voice Cloning","Audio Mixing","Audio Transcription",
+      "Podcast Creation","Article Writing","Scriptwriting","Text Summarization","Text Correction","Creative Writing",
+      "Code Assistance","Automated Testing","Website Creation","Documentation","Cybersecurity","Dynamic Pricing",
+      "Sales Forecasting","Inventory Management","Customer Support","Product Recommendation","Course Creation",
+      "Personal Tutor","Quiz & Test","Student Performance","Accounting","Financial Forecasting","Fraud Detection",
+      "Automated Trading","Investment Management"
+    ];
+
     let data = [];
 
     // Charger les IA depuis data.json
@@ -245,12 +253,11 @@
       .then(json => {
         data = json;
         displayIA(data);
-        setupCategories(data);
+        setupCategories();
       })
       .catch(err => console.error("Erreur chargement data.json :", err));
 
-    function setupCategories(data) {
-      const categories = [...new Set(data.flatMap(d => d.category.split(",").map(c => c.trim())))];
+    function setupCategories() {
       categoryList.innerHTML = "";
       categories.forEach(cat => {
         const div = document.createElement("div");
@@ -267,10 +274,9 @@
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <img src="${item.image || 'https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg'}" alt="IA">
           <div class="card-content">
-            <h3>${item.name}</h3>
-            <p>${item.desc}</p>
+            <h3>${item.name || "IA sans nom"}</h3>
+            <p>${item.desc || "Aucune description disponible."}</p>
           </div>
         `;
         iaGrid.appendChild(card);
@@ -278,16 +284,18 @@
     }
 
     function filterIA(keyword) {
-      const filtered = data.filter(i => i.category.toLowerCase().includes(keyword.toLowerCase()));
+      const filtered = data.filter(i =>
+        (i.desc && i.desc.toLowerCase().includes(keyword.toLowerCase())) ||
+        (i.name && i.name.toLowerCase().includes(keyword.toLowerCase()))
+      );
       displayIA(filtered);
     }
 
     searchBar.addEventListener("input", e => {
       const value = e.target.value.toLowerCase();
       const filtered = data.filter(i =>
-        i.name.toLowerCase().includes(value) ||
-        i.desc.toLowerCase().includes(value) ||
-        i.category.toLowerCase().includes(value)
+        (i.name && i.name.toLowerCase().includes(value)) ||
+        (i.desc && i.desc.toLowerCase().includes(value))
       );
       displayIA(filtered);
     });
