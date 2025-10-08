@@ -1,454 +1,304 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FlixAI — Les Meilleures IA</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aixploria IA - Pro Edition</title>
   <style>
-    /* ---------------------------
-       PALETTES & GLOBAL
-       --------------------------- */
-    :root{
-      --bg-dark: #1e1e1e;        /* fond principal demandé */
-      --text-dark: #e7e7e7;
-      --accent-dark: #d0d0d0;
-      --card-bg-dark: #0b0b0b;   /* cartes noires */
-      --glass-border-dark: rgba(255,255,255,0.06);
-      --shadow-dark: rgba(0,0,0,0.6);
-      --hover-veil: rgba(255,255,255,0.06); /* voile gris clair au survol */
+    :root {
+      --bg: #0f0f0f;
+      --text: #eaeaea;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --shadow: rgba(0, 0, 0, 0.5);
+      --card-bg: rgba(255, 255, 255, 0.06);
+      --accent: #aaa;
     }
 
-    [data-theme="dark"]{
-      --bg: var(--bg-dark);
-      --text: var(--text-dark);
-      --accent: var(--accent-dark);
-      --card-bg: var(--card-bg-dark);
-      --glass-border: var(--glass-border-dark);
-      --shadow: var(--shadow-dark);
+    [data-theme="light"] {
+      --bg: #f4f4f4;
+      --text: #1a1a1a;
+      --glass: rgba(255, 255, 255, 0.8);
+      --glass-border: rgba(0, 0, 0, 0.1);
+      --shadow: rgba(0, 0, 0, 0.1);
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --accent: #444;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family:"Inter","Poppins",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
-      background:var(--bg);
-      color:var(--text);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      transition: background .28s ease, color .24s ease;
-      overflow-x:hidden;
-      min-height:100vh;
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      transition: background 0.4s ease, color 0.4s ease;
     }
 
-    /* ---------------------------
-       HEADER
-       --------------------------- */
-    header{
-      position:fixed; top:0; left:0; right:0;
-      height:64px;
-      display:flex; align-items:center; justify-content:center;
-      padding:0 16px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--glass-border);
-      box-shadow: 0 6px 20px var(--shadow);
-      z-index:110;
-    }
-    header h1{
-      margin:0; font-size:18px; font-weight:700; color:var(--accent); letter-spacing:.4px;
+    /* Barre de recherche */
+    .search-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+      animation: slideIn 1.3s ease forwards;
     }
 
-    /* ---------------------------
-       LEFT MENU BUTTON
-       --------------------------- */
-    .menu-btn{
-      position:absolute; left:14px; width:34px; height:26px; border:0; background:transparent; cursor:pointer;
-      display:flex; flex-direction:column; justify-content:space-between; padding:5px; z-index:120;
-    }
-    .menu-btn span{display:block;height:3px;background:var(--text);border-radius:4px;transition:all .22s ease}
-    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(8px)}
-    .menu-btn.active span:nth-child(2){opacity:0}
-    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-8px)}
-
-    /* ---------------------------
-       THEME SWITCH (Uiverse) small top-right
-       --------------------------- */
-    .theme-switch{
-      --toggle-size: 14px; /* smaller */
-      --container-width: 4.6em;
-      --container-height: 2.0em;
-      --container-radius: 6.25em;
-      --container-light-bg: #3D7EAE;
-      --container-night-bg: #1D1F2C;
-      --circle-container-diameter: 2.75em;
-      --sun-moon-diameter: 1.75em;
-      --sun-bg: #ECCA2F;
-      --moon-bg: #C4C9D1;
-      --spot-color: #959DB1;
-      --circle-container-offset: calc((var(--circle-container-diameter) - var(--container-height)) / 2 * -1);
-      --transition: .4s cubic-bezier(0, -0.02, 0.4, 1.25);
-      font-size: var(--toggle-size);
-      display:block;
-      position:absolute;
-      right:12px;
-      top:14px;
-      z-index:120;
-    }
-    .theme-switch *{box-sizing:border-box;margin:0;padding:0}
-    .theme-switch__checkbox{display:none}
-    .theme-switch__container{
-      width:var(--container-width); height:var(--container-height);
-      background-color:var(--container-light-bg);
-      border-radius:var(--container-radius);
-      overflow:hidden; cursor:pointer;
-      box-shadow: 0em -0.062em 0.062em rgba(0,0,0,0.18), 0em 0.062em 0.125em rgba(255,255,255,0.9);
-      transition:var(--transition); position:relative; display:block;
-    }
-    .theme-switch__circle-container{
-      width:var(--circle-container-diameter); height:var(--circle-container-diameter);
-      background-color: rgba(255,255,255,0.06);
-      position:absolute;
-      left:var(--circle-container-offset);
-      top:var(--circle-container-offset);
-      border-radius:var(--container-radius);
-      display:flex; align-items:center; justify-content:center;
-      transition:calc(var(--transition) - .12s); pointer-events:none;
-    }
-    .theme-switch__sun-moon-container{
-      width:var(--sun-moon-diameter); height:var(--sun-moon-diameter);
-      margin:auto; border-radius:var(--container-radius);
-      background-color:var(--sun-bg); overflow:hidden; transition:var(--transition);
-    }
-    .theme-switch__moon{ transform: translateX(100%); width:100%; height:100%; background-color:var(--moon-bg); border-radius:inherit; transition:var(--transition); position:relative }
-    .theme-switch__spot{ position:absolute; top:.5em; left:.25em; width:.55em; height:.55em; border-radius:6px; background:var(--spot-color) }
-    .theme-switch__clouds{ width:1em; height:1em; background:#F3FDFF; border-radius:999px; position:absolute; bottom:-.45em; left:.25em; opacity:0.98; transition:var(--transition) }
-    .theme-switch__stars-container{ position:absolute; color:#fff; top:-100%; left:.312em; width:2.75em; height:auto; transition:var(--transition) }
-
-    .theme-switch__checkbox:checked + .theme-switch__container{
-      background-color:var(--container-night-bg);
-    }
-    .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__circle-container{
-      left: calc(100% - var(--circle-container-offset) - var(--circle-container-diameter));
-    }
-    .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__moon{
-      transform: translateX(0);
-    }
-    .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__clouds{
-      bottom:-3.2em;
-    }
-    .theme-switch__checkbox:checked + .theme-switch__container .theme-switch__stars-container{
-      top:50%; transform:translateY(-50%);
+    @keyframes slideIn {
+      0% { transform: translateX(-100%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
     }
 
-    /* ---------------------------
-       SIDEBAR & OVERLAY
-       --------------------------- */
-    .sidebar{
-      position:fixed; top:0; left:-300px; width:260px; height:100vh;
-      padding-top:84px; overflow-y:auto; -webkit-overflow-scrolling:touch;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-      backdrop-filter:blur(12px);
-      border-right:1px solid var(--glass-border);
-      box-shadow:8px 0 28px var(--shadow);
-      transition:left .30s cubic-bezier(.2,.9,.2,1); z-index:105;
-    }
-    .sidebar.open{ left:0 }
-    .sidebar h2{ color:var(--accent); margin:10px 16px; font-size:14px; border-bottom:1px solid var(--glass-border); padding-bottom:8px }
-    .sidebar ul{ list-style:none; margin:0; padding:6px 8px 40px 8px }
-    .sidebar li{
-      padding:8px 12px; color:var(--text); cursor:pointer; border-left:3px solid transparent; border-radius:8px;
-      transition: all .14s ease;
-    }
-    .sidebar li:hover{ background: rgba(255,255,255,0.02); border-left:3px solid var(--accent); transform:translateX(6px) }
-
-    .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.35); backdrop-filter:blur(4px); opacity:0; visibility:hidden; transition:opacity .3s ease; z-index:100 }
-    .overlay.active{ opacity:1; visibility:visible }
-
-    /* ---------------------------
-       SEARCH (center, no animation)
-       --------------------------- */
-    .search-container{
-      display:flex; justify-content:center; padding:18px; margin-top:86px;
-    }
-    .search-bar{
-      width:86%; max-width:720px; padding:12px 18px; border-radius:12px;
-      border:1px solid var(--glass-border); background:var(--card-bg); color:var(--text);
-      box-shadow:0 6px 18px var(--shadow); outline:none; font-size:15px;
+    .search-bar {
+      width: 70%;
+      max-width: 600px;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 14px;
+      border: 1px solid var(--glass-border);
+      background: var(--glass);
+      color: var(--text);
+      backdrop-filter: blur(18px);
+      outline: none;
+      transition: all 0.3s ease;
     }
 
-    /* ---------------------------
-       GRID & CARDS (black + hover veil)
-       --------------------------- */
-    main{ padding:0 18px 80px; max-width:1320px; margin:0 auto }
-    .grid{ display:grid; gap:18px; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); margin-top:8px }
-    .card{
-      position:relative;
-      background:var(--card-bg);
-      border-radius:12px; overflow:hidden;
-      border:1px solid var(--glass-border);
-      box-shadow:0 14px 30px var(--shadow); display:flex; flex-direction:column;
-      transition: transform .2s ease, box-shadow .2s ease;
-      min-height:220px;
-    }
-    .card:hover{ transform:translateY(-6px); box-shadow:0 20px 48px rgba(0,0,0,0.5) }
-
-    .card img{ width:100%; height:140px; object-fit:cover; display:block; border-bottom:1px solid var(--glass-border) }
-
-    /* voile behind on hover: create pseudo element that sits behind content but visible on hover */
-    .card::before{
-      content:"";
-      position:absolute; inset:0;
-      background: transparent;
-      z-index:0;
-      transition: background .18s ease;
-      pointer-events:none;
-    }
-    .card:hover::before{
-      background: var(--hover-veil); /* light veil appears "behind" (visual behind content) */
+    .search-bar:focus {
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
     }
 
-    .card-header{ padding:12px 14px; z-index:10; position:relative }
-    .card-title{ font-weight:700; font-size:15px; color:var(--accent); margin:0 }
-    .card-meta{ font-size:12px; color:rgba(255,255,255,0.6); margin-top:6px }
-
-    .card-body{ padding:10px 14px; font-size:14px; color:var(--text); z-index:10; position:relative; flex:1 }
-
-    .card-footer{
-      padding:10px 14px; text-align:center; font-weight:600; background: rgba(255,255,255,0.02);
-      border-top:1px solid var(--glass-border); cursor:pointer; z-index:10; position:relative;
+    /* Menu */
+    .menu {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 10px;
+      backdrop-filter: blur(18px);
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: transform 0.3s ease;
     }
 
-    /* responsive */
-    @media (max-width:720px){
-      .sidebar{ width:86vw; left:-86vw }
-      .theme-switch{ right:10px; top:10px }
-      .menu-btn{ left:10px }
-      .search-bar{ width:94% }
+    .menu:hover {
+      transform: scale(1.05);
+    }
+
+    .menu span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      background: var(--text);
+      margin: 5px 0;
+      border-radius: 2px;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 240px;
+      height: 100%;
+      background: var(--glass);
+      border-right: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      transition: left 0.4s ease;
+      padding: 80px 15px 15px;
+      overflow-y: auto;
+    }
+
+    .sidebar.open {
+      left: 0;
+    }
+
+    .category {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--text);
+      transition: background 0.3s;
+    }
+
+    .category:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    /* Cartes IA */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      padding: 100px 40px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      box-shadow: 0 8px 24px var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+      transition: transform .3s ease, box-shadow .3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,200,200,0.4) 0%, rgba(255,255,255,0) 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      filter: blur(8px);
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.3);
+    }
+
+    .card:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 16px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .card p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* Bouton thème */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
     }
   </style>
 </head>
+
 <body data-theme="dark">
-  <!-- Overlay -->
-  <div class="overlay" id="overlay"></div>
-
-  <!-- Header -->
-  <header>
-    <button class="menu-btn" id="menuBtn" aria-label="Ouvrir le menu"><span></span><span></span><span></span></button>
-    <h1>FlixAI</h1>
-
-    <!-- THEME SWITCH (Uiverse reduced) -->
-    <label class="theme-switch" title="Changer le thème">
-      <input id="themeCheckbox" class="theme-switch__checkbox" type="checkbox" />
-      <span class="theme-switch__container" aria-hidden="true">
-        <span class="theme-switch__circle-container" aria-hidden="true">
-          <span class="theme-switch__sun-moon-container" aria-hidden="true">
-            <i class="theme-switch__moon" aria-hidden="true"></i>
-            <i class="theme-switch__spot" aria-hidden="true"></i>
-            <i class="theme-switch__clouds" aria-hidden="true"></i>
-          </span>
-        </span>
-        <span class="theme-switch__stars-container" aria-hidden="true"></span>
-      </span>
-    </label>
-  </header>
-
-  <!-- Sidebar (retractable) -->
-  <nav class="sidebar" id="sidebar" aria-hidden="true">
-    <h2>Catégories</h2>
-    <ul id="categoryList" role="menu" aria-label="Catégories"></ul>
-  </nav>
-
-  <!-- Search (centered, no animation) -->
-  <div class="search-container">
-    <input id="searchBar" class="search-bar" type="search" placeholder="🔍 Rechercher (ex: free business image) — Entrée pour valider" aria-label="Rechercher">
+  <div class="menu" id="menuBtn">
+    <span></span><span></span><span></span>
   </div>
 
-  <!-- Main grid -->
-  <main>
-    <div id="grid" class="grid" aria-live="polite"></div>
-  </main>
+  <div class="theme-toggle" id="themeToggle">🌙</div>
 
-  <footer style="text-align:center;padding:36px 12px;color:rgba(255,255,255,0.55)">FlixAI — © 2025</footer>
+  <div class="sidebar" id="sidebar">
+    <h3>Catégories</h3>
+    <div id="categoryList"></div>
+  </div>
+
+  <div class="search-container">
+    <input type="text" class="search-bar" id="searchBar" placeholder="Rechercher une IA...">
+  </div>
+
+  <div class="grid" id="iaGrid"></div>
 
   <script>
-    /* ---------------------------
-       Elements & data
-       --------------------------- */
-    const menuBtn = document.getElementById('menuBtn');
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const searchBar = document.getElementById('searchBar');
-    const grid = document.getElementById('grid');
-    const categoryList = document.getElementById('categoryList');
-    const themeCheckbox = document.getElementById('themeCheckbox');
-
-    const categories = [
-      "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
-      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
-      "Logo Design","Web Mockup","Photo Editing","Art Concept","Video Editing","Talking Avatar","Dubbing",
-      "Text-to-Video","Video Upscale","Voice Generation","Voice Cloning","Audio Mixing","Audio Transcription",
-      "Podcast Creation","Article Writing","Scriptwriting","Text Summarization","Text Correction","Creative Writing",
-      "Code Assistance","Automated Testing","Website Creation","Documentation","Cybersecurity","Dynamic Pricing",
-      "Sales Forecasting","Inventory Management","Customer Support","Product Recommendation","Course Creation",
-      "Personal Tutor","Quiz & Test","Student Performance","Accounting","Financial Forecasting","Fraud Detection",
-      "Automated Trading","Investment Management"
+    const data = [
+      { name: "ChatGPT", desc: "Assistant IA avancé pour le texte et le code.", category: "Business, Free, Writing" },
+      { name: "Midjourney", desc: "Génère des images avec l'IA.", category: "Art, Design, Image" },
+      { name: "Claude", desc: "IA conversationnelle pour entreprise.", category: "Business, Chat, Writing" },
+      { name: "Runway", desc: "Outils IA pour la vidéo.", category: "Video, Creation, Pro" },
+      { name: "Perplexity", desc: "Moteur de recherche IA avancé.", category: "Search, Free, Business" }
     ];
 
-    let allData = [];
+    const iaGrid = document.getElementById("iaGrid");
+    const categoryList = document.getElementById("categoryList");
+    const searchBar = document.getElementById("searchBar");
 
-    /* ---------------------------
-       Theme switch behavior
-       --------------------------- */
-    (function initTheme(){
-      // dark by default (body already has data-theme="dark")
-      // set checkbox to match body
-      themeCheckbox.checked = document.body.getAttribute('data-theme') === 'dark';
+    const categories = [...new Set(data.flatMap(d => d.category.split(",").map(c => c.trim())))];
 
-      // persist preference
-      const stored = localStorage.getItem('flixai_theme');
-      if(stored === 'light'){
-        document.body.removeAttribute('data-theme');
-        themeCheckbox.checked = false;
-      } else if(stored === 'dark'){
-        document.body.setAttribute('data-theme','dark');
-        themeCheckbox.checked = true;
-      }
-
-      themeCheckbox.addEventListener('change', () => {
-        if(themeCheckbox.checked){
-          document.body.setAttribute('data-theme','dark');
-          localStorage.setItem('flixai_theme','dark');
-        } else {
-          document.body.removeAttribute('data-theme');
-          localStorage.setItem('flixai_theme','light');
-        }
-      });
-    })();
-
-    /* ---------------------------
-       Sidebar open/close
-       --------------------------- */
-    menuBtn.addEventListener('click', () => {
-      const open = sidebar.classList.toggle('open');
-      overlay.classList.toggle('active', open);
-      menuBtn.classList.toggle('active', open);
-      sidebar.setAttribute('aria-hidden', !open);
-    });
-    overlay.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      overlay.classList.remove('active');
-      menuBtn.classList.remove('active');
-      sidebar.setAttribute('aria-hidden', true);
+    categories.forEach(cat => {
+      const div = document.createElement("div");
+      div.classList.add("category");
+      div.textContent = cat;
+      div.onclick = () => filterIA(cat);
+      categoryList.appendChild(div);
     });
 
-    /* ---------------------------
-       Load data.json and render
-       --------------------------- */
-    async function loadData(){
-      try{
-        const res = await fetch('data.json');
-        if(!res.ok) throw new Error('Impossible de charger data.json');
-        const d = await res.json();
-        allData = Array.isArray(d) ? d : [d];
-        renderCategories();
-        showCards(allData);
-      } catch(err){
-        grid.innerHTML = `<div style="padding:20px;color:#ff6b6b;font-weight:700">Erreur: ${escapeHtml(err.message||err)}</div>`;
-      }
-    }
-
-    const DEFAULT_IMAGE = "https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg";
-
-    function showCards(list){
-      grid.innerHTML = "";
-      const frag = document.createDocumentFragment();
-      list.forEach(item => {
-        const card = document.createElement('article');
-        card.className = 'card';
-
-        const img = document.createElement('img');
-        img.src = item.image ? item.image : DEFAULT_IMAGE;
-        img.alt = item.handle ? item.handle : 'IA';
-
-        const header = document.createElement('div');
-        header.className = 'card-header';
-        header.innerHTML = `<div class="card-title">${escapeHtml(item.handle || 'Sans nom')}</div>
-                            <div class="card-meta">${escapeHtml(item.id || '')}</div>`;
-
-        const body = document.createElement('div');
-        body.className = 'card-body';
-        body.textContent = item.description || '(Pas de description)';
-
-        const footer = document.createElement('div');
-        footer.className = 'card-footer';
-        footer.textContent = 'Visiter';
-        footer.addEventListener('click', () => {
-          if(item.website) window.open(item.website, '_blank', 'noopener');
-        });
-
-        // append with correct stacking: img & pseudo ::before will show veil on hover
-        card.append(img, header, body, footer);
-        frag.appendChild(card);
-      });
-      grid.appendChild(frag);
-    }
-
-    /* ---------------------------
-       Categories rendering and click -> filter
-       --------------------------- */
-    function renderCategories(){
-      categoryList.innerHTML = "";
-      const allLi = document.createElement('li');
-      allLi.textContent = "Toutes les catégories";
-      allLi.addEventListener('click', () => { showCards(allData); sidebar.classList.remove('open'); overlay.classList.remove('active'); menuBtn.classList.remove('active'); });
-      categoryList.appendChild(allLi);
-
-      categories.forEach(cat => {
-        const li = document.createElement('li');
-        li.textContent = cat;
-        li.addEventListener('click', () => {
-          filterByKeyword(cat);
-          sidebar.classList.remove('open'); overlay.classList.remove('active'); menuBtn.classList.remove('active');
-        });
-        categoryList.appendChild(li);
+    function displayIA(items) {
+      iaGrid.innerHTML = "";
+      items.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg" alt="IA">
+          <div class="card-content">
+            <h3>${item.name}</h3>
+            <p>${item.desc}</p>
+          </div>
+        `;
+        iaGrid.appendChild(card);
       });
     }
 
-    /* ---------------------------
-       Search: multi-word AND logic
-       - Enter to validate, also live updates
-       --------------------------- */
-    searchBar.addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') {
-        filterByKeyword(searchBar.value.trim());
-      }
-    });
-    searchBar.addEventListener('input', () => {
-      const q = searchBar.value.trim();
-      if(!q) return showCards(allData);
-      filterByKeyword(q);
-    });
-
-    function filterByKeyword(query){
-      if(!query) { showCards(allData); return; }
-      const words = query.toLowerCase().split(/\s+/).filter(Boolean);
-      const filtered = allData.filter(item => {
-        const text = ((item.description||'') + ' ' + (item.handle||'')).toLowerCase();
-        return words.every(w => text.includes(w));
-      });
-      showCards(filtered);
+    function filterIA(keyword) {
+      const filtered = data.filter(i => i.category.toLowerCase().includes(keyword.toLowerCase()));
+      displayIA(filtered);
     }
 
-    /* ---------------------------
-       util
-       --------------------------- */
-    function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+    searchBar.addEventListener("input", e => {
+      const value = e.target.value.toLowerCase();
+      const filtered = data.filter(i =>
+        i.name.toLowerCase().includes(value) ||
+        i.desc.toLowerCase().includes(value) ||
+        i.category.toLowerCase().includes(value)
+      );
+      displayIA(filtered);
+    });
 
-    /* ---------------------------
-       start
-       --------------------------- */
-    loadData();
+    // Sidebar toggle
+    const menuBtn = document.getElementById("menuBtn");
+    const sidebar = document.getElementById("sidebar");
+    menuBtn.onclick = () => sidebar.classList.toggle("open");
+
+    // Theme toggle
+    const themeToggle = document.getElementById("themeToggle");
+    themeToggle.onclick = () => {
+      const current = document.body.getAttribute("data-theme");
+      document.body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+      themeToggle.textContent = current === "dark" ? "☀️" : "🌙";
+    };
+
+    displayIA(data);
   </script>
 </body>
 </html>
