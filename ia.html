@@ -201,6 +201,7 @@
     }
 
     .card {
+      position: relative;
       background: var(--card-bg);
       border: 1px solid var(--glass-border);
       border-radius: 18px;
@@ -217,6 +218,25 @@
       box-shadow: 0 12px 28px rgba(0,0,0,0.3);
     }
 
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 60%;
+      height: 4px;
+      background: rgba(200,200,200,0.6);
+      border-radius: 2px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .card:hover::after {
+      transform: translateX(-50%) scaleX(1);
+      opacity: 1;
+    }
+
     .card img {
       width: 100%;
       height: 160px;
@@ -225,41 +245,14 @@
     }
 
     .card-header { padding: 16px; }
-    .card-title {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--accent);
-    }
-    .card-meta {
-      font-size: 12px;
-      color: #888;
-      margin-top: 4px;
-    }
-
-    .card-body {
-      padding: 0 16px 16px;
-      font-size: 14px;
-      color: var(--text);
-      flex-grow: 1;
-    }
-
-    .card-footer {
-      background: rgba(0,0,0,0.05);
-      text-align: center;
-      padding: 12px;
-      text-decoration: none;
-      color: var(--accent);
-      font-weight: 500;
-      transition: background 0.3s ease;
-    }
+    .card-title { font-size: 18px; font-weight: 600; color: var(--accent); }
+    .card-meta { font-size: 12px; color: #888; margin-top: 4px; }
+    .card-body { padding: 0 16px 16px; font-size: 14px; color: var(--text); flex-grow: 1; }
+    .card-footer { background: rgba(0,0,0,0.05); text-align: center; padding: 12px; text-decoration: none; color: var(--accent); font-weight: 500; transition: background 0.3s ease; }
     .card-footer:hover { background: rgba(0,0,0,0.1); }
 
-    footer {
-      text-align: center;
-      color: #777;
-      font-size: 13px;
-      padding: 30px 0;
-    }
+    footer { text-align: center; color: #777; font-size: 13px; padding: 30px 0; }
+
   </style>
 </head>
 <body data-theme="dark">
@@ -297,17 +290,15 @@
 
     const categories = [
       "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
-      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation",
-      "Logo Design","Web Mockup","Photo Editing","Art Concept","Video Editing","Talking Avatar","Dubbing",
-      "Text-to-Video","Video Upscale","Voice Generation","Voice Cloning","Audio Mixing","Audio Transcription",
-      "Podcast Creation","Article Writing","Scriptwriting","Text Summarization","Text Correction","Creative Writing",
-      "Code Assistance","Automated Testing","Website Creation","Documentation","Cybersecurity","Dynamic Pricing",
-      "Sales Forecasting","Inventory Management","Customer Support","Product Recommendation","Course Creation",
-      "Personal Tutor","Quiz & Test","Student Performance","Accounting","Financial Forecasting","Fraud Detection",
-      "Automated Trading","Investment Management"
+      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation"
     ];
 
-    let allData = [];
+    const allData = [
+      {id:"1", handle:"AI Business", description:"IA pour gérer votre business.", image:"https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg", website:"#"},
+      {id:"2", handle:"AI Image", description:"Génère des images incroyables.", image:"https://cdn.pixabay.com/photo/2020/04/10/13/06/artificial-intelligence-5028255_1280.jpg", website:"#"},
+      {id:"3", handle:"AI Social", description:"Optimise vos réseaux sociaux.", image:"https://cdn.pixabay.com/photo/2018/03/02/01/04/technology-3199245_1280.jpg", website:"#"},
+      {id:"4", handle:"AI Code", description:"Assistance pour coder rapidement.", image:"https://cdn.pixabay.com/photo/2019/04/11/10/12/artificial-intelligence-4117678_1280.jpg", website:"#"}
+    ];
 
     menuBtn.addEventListener("click", toggleMenu);
     overlay.addEventListener("click", closeMenu);
@@ -330,20 +321,8 @@
         document.body.removeAttribute("data-theme");
         themeToggle.textContent = "🌙";
       } else {
-        document.body.setAttribute("data-theme", "dark");
+        document.body.setAttribute("data-theme","dark");
         themeToggle.textContent = "☀️";
-      }
-    });
-
-    window.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const res = await fetch("data.json");
-        const data = await res.json();
-        allData = Array.isArray(data) ? data : [data];
-        renderCategories();
-        showCards(allData);
-      } catch {
-        grid.innerHTML = `<div style="color:red;font-weight:700;">Erreur de chargement</div>`;
       }
     });
 
@@ -363,9 +342,49 @@
     }
 
     searchBar.addEventListener("input", () => {
-      const query = searchBar.value.trim();
-      filterByKeyword(query);
+      filterByKeyword(searchBar.value.trim());
     });
 
     function filterByKeyword(query) {
-      if (!query
+      if (!query) return showCards(allData);
+      const filtered = allData.filter(item => (item.handle + " " + item.description).toLowerCase().includes(query.toLowerCase()));
+      showCards(filtered);
+    }
+
+    function showCards(data) {
+      grid.innerHTML = "";
+      data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.src = item.image;
+        img.alt = item.handle;
+
+        const header = document.createElement("div");
+        header.className = "card-header";
+        header.innerHTML = `<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id}</div>`;
+
+        const body = document.createElement("div");
+        body.className = "card-body";
+        body.textContent = item.description;
+
+        const footer = document.createElement("a");
+        footer.className = "card-footer";
+        footer.href = item.website;
+        footer.target = "_blank";
+        footer.textContent = "Visiter le site";
+
+        card.appendChild(img);
+        card.appendChild(header);
+        card.appendChild(body);
+        card.appendChild(footer);
+        grid.appendChild(card);
+      });
+    }
+
+    renderCategories();
+    showCards(allData);
+  </script>
+</body>
+</html>
