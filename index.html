@@ -1,96 +1,51 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FlixAI Intro</title>
-<style>
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body, html{
-    width:100%; height:100%;
-    overflow:hidden;
-    background:#0d0d14;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family:"Poppins",sans-serif;
-  }
-  canvas{
-    position:absolute; top:0; left:0; display:block;
-  }
-  #logo{
-    position:absolute;
-    font-size:6rem;
-    color:#ffffff;
-    opacity:0;
-    transform:scale(0.8);
-    letter-spacing:12px;
-    text-shadow:0 0 20px rgba(255,255,255,0.3);
-    transition:all 1s ease-out;
-    z-index:10;
-    text-align:center;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intro</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      height: 100%;
+      overflow: hidden;
+    }
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
 </head>
 <body>
+  <video id="introVideo" autoplay>
+    <source src="intro.mp4" type="video/mp4">
+    Ton navigateur ne supporte pas la vidéo HTML5.
+  </video>
 
-<canvas id="canvas"></canvas>
-<div id="logo">FlixAI</div>
+  <script>
+    const video = document.getElementById('introVideo');
 
-<script>
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    // Met en plein écran dès le début
+    video.addEventListener('play', () => {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+    });
 
-// Particules minimalistes
-let particles = [];
-const particleCount = 120;
-
-for(let i=0;i<particleCount;i++){
-  particles.push({
-    x: Math.random()*canvas.width,
-    y: Math.random()*canvas.height,
-    vx: (Math.random()-0.5)*0.6,
-    vy: (Math.random()-0.5)*0.6,
-    size: Math.random()*2+1,
-    color: `rgba(255,255,255,${Math.random()*0.3+0.1})`
-  });
-}
-
-function drawParticles(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  particles.forEach(p=>{
-    ctx.beginPath();
-    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
-    ctx.fillStyle = p.color;
-    ctx.fill();
-    p.x += p.vx;
-    p.y += p.vy;
-    if(p.x<0||p.x>canvas.width)p.vx*=-1;
-    if(p.y<0||p.y>canvas.height)p.vy*=-1;
-  });
-  requestAnimationFrame(drawParticles);
-}
-drawParticles();
-
-// Logo apparaît
-function showLogo(){
-  const logo = document.getElementById('logo');
-  logo.style.opacity = 1;
-  logo.style.transform = 'scale(1)';
-  setTimeout(()=>{ window.location.href="ia.html"; }, 2500);
-}
-
-// Lancer après 1s
-setTimeout(showLogo, 1000);
-
-// Redimension
-window.addEventListener('resize', ()=>{
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-</script>
-
+    // Quand la vidéo se termine, redirige vers ia.html
+    video.addEventListener('ended', () => {
+      window.location.href = "ia.html";
+    });
+  </script>
 </body>
 </html>
