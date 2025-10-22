@@ -6,237 +6,86 @@
   <title>FlixAI — Les Meilleures IA</title>
   <style>
     :root {
+      --bg: #f4f4f4;
+      --text: #1a1a1a;
+      --accent: #2f2f2f;
+      --card-bg: rgba(255,255,255,0.25);
+      --glass-border: rgba(255,255,255,0.3);
+      --shadow: rgba(0,0,0,0.1);
+    }
+
+    [data-theme="dark"] {
       --bg: #0c0c0f;
       --text: #e5e5e5;
       --accent: #d1d1d1;
-      --card-bg: rgba(30, 30, 35, 0.5);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --shadow: rgba(0, 0, 0, 0.5);
-      --liquid-highlight: rgba(255, 255, 255, 0.07);
+      --card-bg: rgba(25,25,28,0.55);
+      --glass-border: rgba(255,255,255,0.08);
+      --shadow: rgba(0,0,0,0.5);
     }
 
     * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Poppins", system-ui, sans-serif;
-      background: radial-gradient(circle at 10% 10%, #0f0f13 0%, #09090c 100%);
-      color: var(--text);
-      overflow-x: hidden;
-      min-height: 100vh;
-      transition: background 0.5s, color 0.5s;
-    }
+    body { margin:0; font-family:"Poppins",system-ui,sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; transition: background 0.5s,color 0.5s; }
 
-    /* ---- HEADER ---- */
     header {
-      position: fixed; top: 0; left: 0; width: 100%;
-      padding: 16px 20px;
-      background: rgba(20, 20, 25, 0.6);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--glass-border);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 10;
+      position: fixed; top:0; left:0; width:100%; padding:16px 20px;
+      background: var(--card-bg); backdrop-filter: blur(20px); border-bottom:1px solid var(--glass-border);
+      box-shadow: 0 4px 20px var(--shadow); display:flex; align-items:center; justify-content:center; z-index:10;
     }
 
-    h1 {
-      margin: 0; font-size: 22px; font-weight: 600; color: var(--accent);
-      letter-spacing: 0.5px;
-    }
+    h1 { margin:0; font-size:22px; font-weight:600; color:var(--accent); letter-spacing:0.5px; }
 
-    /* ---- MENU ---- */
-    .menu-btn {
-      position: absolute; left: 20px;
-      background: none; border: none; cursor: pointer;
-      display: flex; flex-direction: column; justify-content: space-between;
-      width: 26px; height: 18px; z-index: 20;
-    }
+    .menu-btn { position:absolute; left:20px; background:none; border:none; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; width:26px; height:18px; z-index:20; }
+    .menu-btn span { display:block; height:3px; width:100%; background:var(--text); border-radius:3px; transition: all .3s ease; }
+    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(7px);}
+    .menu-btn.active span:nth-child(2){opacity:0;}
+    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-7px);}
 
-    .menu-btn span {
-      display: block; height: 3px; width: 100%;
-      background: var(--text); border-radius: 3px; transition: all 0.3s ease;
-    }
-
-    .menu-btn.active span:nth-child(1){ transform: rotate(45deg) translateY(7px); }
-    .menu-btn.active span:nth-child(2){ opacity: 0; }
-    .menu-btn.active span:nth-child(3){ transform: rotate(-45deg) translateY(-7px); }
+    .theme-toggle { position:absolute; right:20px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text); transition: transform 0.3s ease; }
+    .theme-toggle:hover { transform: scale(1.1); }
 
     .sidebar {
-      position: fixed; top: 0; left: -280px;
-      width: 240px; height: 100%;
-      background: rgba(25, 25, 30, 0.75);
-      backdrop-filter: blur(18px);
-      border-right: 1px solid var(--glass-border);
-      box-shadow: 4px 0 20px var(--shadow);
-      transition: left 0.4s ease;
-      z-index: 15;
-      padding-top: 80px; overflow-y: auto;
+      position: fixed; top:0; left:-280px; width:240px; height:100%; background: var(--card-bg); backdrop-filter:blur(18px); border-right:1px solid var(--glass-border);
+      box-shadow:4px 0 20px var(--shadow); transition:left 0.4s ease; z-index:15; padding-top:80px; overflow-y:auto;
     }
+    .sidebar.open { left:0; }
+    .sidebar h2 { font-size:15px; color:var(--accent); margin:10px 20px; border-bottom:1px solid var(--glass-border); padding-bottom:6px; }
+    .sidebar ul { list-style:none; padding:0; margin:0; }
+    .sidebar li { padding:10px 20px; cursor:pointer; color:var(--text); border-left:3px solid transparent; transition: all 0.3s ease; }
+    .sidebar li:hover { background: rgba(255,255,255,0.1); border-left:3px solid var(--accent); }
 
-    .sidebar.open { left: 0; }
+    .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(4px); opacity:0; visibility:hidden; transition:opacity .4s ease; z-index:5; }
+    .overlay.active { opacity:1; visibility:visible; }
 
-    .sidebar h2 {
-      font-size: 15px; color: var(--accent);
-      margin: 10px 20px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px;
-    }
+    .search-container { display:flex; justify-content:center; padding:24px; margin-top:90px; opacity:0; transform:translateX(-100%); animation: slideIn 1.2s ease forwards; animation-delay:0.4s; }
+    @keyframes slideIn { to { opacity:1; transform:translateX(0); } }
+    .search-bar { width:80%; max-width:600px; padding:12px 18px; border-radius:14px; border:1px solid var(--glass-border); background:var(--card-bg); backdrop-filter:blur(18px); color:var(--text); font-size:15px; outline:none; box-shadow:0 4px 12px var(--shadow); transition: box-shadow 0.3s ease, background 0.3s ease; }
+    .search-bar:focus { box-shadow:0 6px 18px rgba(0,0,0,0.3); }
 
-    .sidebar ul { list-style: none; padding: 0; margin: 0; }
-    .sidebar li {
-      padding: 10px 20px; cursor: pointer; color: var(--text);
-      border-left: 3px solid transparent; transition: all 0.3s ease;
-    }
+    main { margin-top:40px; padding:0 24px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; max-width:1300px; margin:40px auto; }
 
-    .sidebar li:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-left: 3px solid var(--accent);
-    }
+    .card { position:relative; background:var(--card-bg); border:1px solid var(--glass-border); border-radius:18px; box-shadow:0 8px 24px var(--shadow); backdrop-filter:blur(18px); overflow:hidden; transition: transform .3s ease, box-shadow .3s ease; display:flex; flex-direction:column; }
+    .card:hover { transform:translateY(-6px); box-shadow:0 12px 28px rgba(0,0,0,0.3); }
+    .card::after { content:""; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%) scaleX(0); width:60%; height:4px; background:rgba(200,200,200,0.6); border-radius:2px; transition: transform 0.3s ease, opacity 0.3s ease; opacity:0; }
+    .card:hover::after { transform:translateX(-50%) scaleX(1); opacity:1; }
+    .card img { width:100%; height:160px; object-fit:cover; border-bottom:1px solid var(--glass-border); }
+    .card-header { padding:16px; }
+    .card-title { font-size:18px; font-weight:600; color:var(--accent); }
+    .card-meta { font-size:12px; color:#888; margin-top:4px; }
+    .card-body { padding:0 16px 16px; font-size:14px; color:var(--text); flex-grow:1; }
+    .card-footer { background:rgba(0,0,0,0.05); text-align:center; padding:12px; text-decoration:none; color:var(--accent); font-weight:500; transition:background 0.3s ease; }
+    .card-footer:hover { background:rgba(0,0,0,0.1); }
 
-    /* ---- OVERLAY ---- */
-    .overlay {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(4px);
-      opacity: 0; visibility: hidden;
-      transition: opacity 0.4s ease;
-      z-index: 5;
-    }
-
-    .overlay.active { opacity: 1; visibility: visible; }
-
-    /* ---- SEARCH ---- */
-    .search-container {
-      display: flex; justify-content: center;
-      padding: 24px; margin-top: 90px;
-      opacity: 0; transform: translateX(-100%);
-      animation: slideIn 1.2s ease forwards; animation-delay: 0.4s;
-    }
-
-    @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
-
-    .search-bar {
-      width: 80%; max-width: 600px; padding: 12px 18px;
-      border-radius: 14px; border: 1px solid var(--glass-border);
-      background: rgba(40, 40, 45, 0.4);
-      backdrop-filter: blur(18px);
-      color: var(--text); font-size: 15px; outline: none;
-      box-shadow: 0 4px 12px var(--shadow);
-      transition: box-shadow 0.3s ease, background 0.3s ease;
-    }
-
-    .search-bar:focus {
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
-    }
-
-    /* ---- GRID ---- */
-    main { margin-top: 40px; padding: 0 24px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 24px;
-      max-width: 1300px;
-      margin: 40px auto;
-    }
-
-    /* ---- CARD ---- */
-    .card {
-      position: relative;
-      background: var(--card-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 18px;
-      box-shadow: 0 8px 24px var(--shadow);
-      backdrop-filter: blur(25px) saturate(160%);
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex; flex-direction: column;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(120deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-      animation: subtleFlow 8s ease-in-out infinite alternate;
-      z-index: 1;
-    }
-
-    @keyframes subtleFlow {
-      0% { transform: translateX(-10%); opacity: 0.4; }
-      100% { transform: translateX(10%); opacity: 0.6; }
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
-    }
-
-    .card::after {
-      content: "";
-      position: absolute;
-      bottom: -6px; left: 50%;
-      transform: translateX(-50%) scaleX(0);
-      width: 60%; height: 4px;
-      background: rgba(200, 200, 200, 0.4);
-      border-radius: 2px;
-      transition: transform 0.3s ease, opacity 0.3s ease;
-      opacity: 0;
-    }
-
-    .card:hover::after {
-      transform: translateX(-50%) scaleX(1);
-      opacity: 1;
-    }
-
-    .card img {
-      width: 100%; height: 160px;
-      object-fit: cover;
-      border-bottom: 1px solid var(--glass-border);
-      z-index: 0;
-    }
-
-    .card-header {
-      padding: 16px;
-      z-index: 2;
-    }
-
-    .card-title {
-      font-size: 18px; font-weight: 600; color: var(--accent);
-    }
-
-    .card-meta {
-      font-size: 12px; color: #aaa; margin-top: 4px;
-    }
-
-    .card-body {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 14px 16px 16px;
-      font-size: 14px; color: var(--text);
-      z-index: 2;
-    }
-
-    .card-footer {
-      background: rgba(255, 255, 255, 0.05);
-      text-align: center; padding: 12px;
-      text-decoration: none; color: var(--accent);
-      font-weight: 500; transition: background 0.3s ease;
-      z-index: 2;
-    }
-
-    .card-footer:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    footer {
-      text-align: center;
-      color: #777;
-      font-size: 13px;
-      padding: 30px 0;
-    }
+    footer { text-align:center; color:#777; font-size:13px; padding:30px 0; }
   </style>
 </head>
-<body>
+<body data-theme="dark">
   <div class="overlay" id="overlay"></div>
+
   <header>
     <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
     <h1>FlixAI</h1>
+    <button class="theme-toggle" id="themeToggle">☀️</button>
   </header>
 
   <nav class="sidebar" id="sidebar">
@@ -245,7 +94,7 @@
   </nav>
 
   <div class="search-container">
-    <input id="searchBar" type="text" class="search-bar" placeholder="🔍 Rechercher une IA">
+    <input id="searchBar" type="text" class="search-bar" placeholder=" Rechercher une IA">
   </div>
 
   <main>
@@ -260,92 +109,71 @@
     const overlay = document.getElementById('overlay');
     const grid = document.getElementById('grid');
     const categoryList = document.getElementById('categoryList');
+    const themeToggle = document.getElementById('themeToggle');
     const searchBar = document.getElementById('searchBar');
 
     const categories = [
-      "Business","Productivity","Project Management","Task Automation","Business Plan",
-      "Startup Idea","Email Writing","Copywriting","Social Media","Market Analysis",
-      "Ad Campaign","SEO","Image Generation","Web Mockup","Photo Editing",
-      "Art Concept","Video Editing","Voice Generation","Audio Mixing","Automation"
+      "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
+      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation"
     ];
 
     let allData = [];
-
+    
     menuBtn.addEventListener("click", toggleMenu);
     overlay.addEventListener("click", closeMenu);
-    searchBar.addEventListener("input", () => filterByKeyword(searchBar.value.trim()));
+    themeToggle.addEventListener("click", () => {
+      const current = document.body.getAttribute("data-theme");
+      if(current==="dark"){document.body.removeAttribute("data-theme"); themeToggle.textContent="🌙";}
+      else {document.body.setAttribute("data-theme","dark"); themeToggle.textContent="☀️";}
+    });
+    searchBar.addEventListener("input", () => { filterByKeyword(searchBar.value.trim()); });
 
-    function toggleMenu() {
-      sidebar.classList.toggle("open");
-      overlay.classList.toggle("active");
-      menuBtn.classList.toggle("active");
-    }
+    function toggleMenu(){ sidebar.classList.toggle("open"); overlay.classList.toggle("active"); menuBtn.classList.toggle("active"); }
+    function closeMenu(){ sidebar.classList.remove("open"); overlay.classList.remove("active"); menuBtn.classList.remove("active"); }
 
-    function closeMenu() {
-      sidebar.classList.remove("open");
-      overlay.classList.remove("active");
-      menuBtn.classList.remove("active");
-    }
-
-    function renderCategories() {
+    function renderCategories(){
       categoryList.innerHTML = "";
       const allLi = document.createElement("li");
       allLi.textContent = "Toutes les catégories";
-      allLi.addEventListener("click", () => { showCards(allData); closeMenu(); });
+      allLi.addEventListener("click",()=>{ showCards(allData); closeMenu(); });
       categoryList.appendChild(allLi);
-      categories.forEach(cat => {
-        const li = document.createElement("li");
-        li.textContent = cat;
-        li.addEventListener("click", () => { filterByKeyword(cat); closeMenu(); });
+      categories.forEach(cat=>{
+        const li=document.createElement("li");
+        li.textContent=cat;
+        li.addEventListener("click",()=>{ filterByKeyword(cat); closeMenu(); });
         categoryList.appendChild(li);
       });
     }
 
-    function filterByKeyword(query) {
-      if (!query) return showCards(allData);
-      const filtered = allData.filter(item =>
-        (item.handle + " " + item.description).toLowerCase().includes(query.toLowerCase())
-      );
+    function filterByKeyword(query){
+      if(!query) return showCards(allData);
+      const filtered=allData.filter(item=>(item.handle+" "+item.description).toLowerCase().includes(query.toLowerCase()));
       showCards(filtered);
     }
 
-    function showCards(data) {
-      grid.innerHTML = "";
-      data.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "card";
-        const img = document.createElement("img");
-        img.src = item.image || "https://cdn.pixabay.com/photo/2019/09/25/18/09/artificial-intelligence-4508834_1280.jpg";
-        img.alt = item.handle;
-        const header = document.createElement("div");
-        header.className = "card-header";
-        header.innerHTML = `<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id || "?"}</div>`;
-        const body = document.createElement("div");
-        body.className = "card-body";
-        body.textContent = item.description || "(Pas de description)";
-        const footer = document.createElement("a");
-        footer.className = "card-footer";
-        footer.href = item.website || "#";
-        footer.target = "_blank";
-        footer.textContent = "Visiter le site";
-        card.appendChild(img);
-        card.appendChild(header);
-        card.appendChild(body);
-        card.appendChild(footer);
+    function showCards(data){
+      grid.innerHTML="";
+      data.forEach(item=>{
+        const card=document.createElement("div"); card.className="card";
+        const img=document.createElement("img"); img.src=item.image||"https://cdn.pixabay.com/photo/2022/01/03/19/56/machine-learning-6913525_1280.png"; img.alt=item.handle;
+        const header=document.createElement("div"); header.className="card-header"; header.innerHTML=`<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id||"?"}</div>`;
+        const body=document.createElement("div"); body.className="card-body"; body.textContent=item.description||"(Pas de description)";
+        const footer=document.createElement("a"); footer.className="card-footer"; footer.href=item.website||"#"; footer.target="_blank"; footer.textContent="Visiter le site";
+        card.appendChild(img); card.appendChild(header); card.appendChild(body); card.appendChild(footer);
         grid.appendChild(card);
       });
     }
 
-    async function loadData() {
-      try {
-        const res = await fetch("data.json");
-        if (!res.ok) throw new Error("Impossible de charger data.json");
-        const data = await res.json();
-        allData = Array.isArray(data) ? data : [data];
+    async function loadData(){
+      try{
+        const res=await fetch("data.json");
+        if(!res.ok) throw new Error("Impossible de charger data.json");
+        const data=await res.json();
+        allData=Array.isArray(data)?data:[data];
         renderCategories();
         showCards(allData);
-      } catch (err) {
-        grid.innerHTML = `<div style="color:#f87171;font-weight:700">Erreur: ${err.message}</div>`;
+      } catch(err){
+        grid.innerHTML=`<div style="color:#f87171;font-weight:700">Erreur: ${err.message}</div>`;
       }
     }
 
@@ -353,3 +181,4 @@
   </script>
 </body>
 </html>
+
