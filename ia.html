@@ -155,7 +155,7 @@
       grid.innerHTML="";
       data.forEach(item=>{
         const card=document.createElement("div"); card.className="card";
-        const img=document.createElement("img"); img.src=item.image||"https://cdn.pixabay.com/photo/2022/01/03/19/56/machine-learning-6913525_1280.png"; img.alt=item.handle;
+        const img=document.createElement("img"); img.src=item.image||"https://ibb.co/k2RknvYG"; img.alt=item.handle;
         const header=document.createElement("div"); header.className="card-header"; header.innerHTML=`<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id||"?"}</div>`;
         const body=document.createElement("div"); body.className="card-body"; body.textContent=item.description||"(Pas de description)";
         const footer=document.createElement("a"); footer.className="card-footer"; footer.href=item.website||"#"; footer.target="_blank"; footer.textContent="Visiter le site";
@@ -181,4 +181,5 @@
   </script>
 </body>
 </html>
+
 
