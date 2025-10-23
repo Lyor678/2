@@ -1,163 +1,128 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FLIXAI</title>
+  <title>FlixAI - Introduction</title>
   <style>
     body {
       margin: 0;
-      height: 100vh;
-      background: black;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
+      background-color: #0a0a0a;
+      color: white;
       font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden;
     }
 
-    .container {
-      text-align: center;
-      animation: fadeIn 2s ease-in-out;
-    }
-
-    .neon-text {
-      font-size: 80px;
-      color: white;
-      text-shadow:
-        0 0 10px white,
-        0 0 20px white,
-        0 0 40px #ccc,
-        0 0 80px #fff;
-      animation: glow 2s ease-in-out infinite alternate, slideIn 1.5s ease forwards;
+    .viewer-container {
+      width: 100%;
+      height: 65vh;
       opacity: 0;
+      transform: translateY(-50px);
+      animation: robotEntrance 2s forwards;
+      animation-delay: 0.5s;
     }
 
-    .neon-button {
-      display: inline-block;
-      margin-top: 40px;
-      padding: 15px 40px;
-      color: white;
-      border: 2px solid white;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 22px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: all 0.3s ease;
-      text-shadow:
-        0 0 10px white,
-        0 0 20px white,
-        0 0 40px #ccc,
-        0 0 80px #fff;
-      box-shadow:
-        0 0 10px white,
-        0 0 20px white,
-        0 0 40px #ccc,
-        0 0 80px #fff;
-      animation: fadeIn 3s ease-in-out;
-      cursor: pointer;
+    @keyframes robotEntrance {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
-    .neon-button:hover {
-      transform: scale(1.05);
-      box-shadow:
-        0 0 20px white,
-        0 0 40px #ccc,
-        0 0 80px #fff;
+    spline-viewer {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .intro {
+      text-align: center;
+      max-width: 700px;
+      margin-top: 20px;
+      font-size: 1.2em;
+      animation: fadeIn 2s ease forwards;
+      opacity: 0;
+      animation-delay: 2.5s;
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-
-      to {
-        opacity: 1;
-      }
+      to { opacity: 1; }
     }
 
-    @keyframes slideIn {
-      from {
-        transform: translateY(-50px);
-        opacity: 0;
-      }
-
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
+    #skip-btn {
+      margin-top: 25px;
+      padding: 12px 28px;
+      background-color: #333333;
+      color: #fff;
+      border: 2px solid #fff;
+      border-radius: 30px;
+      font-size: 1em;
+      cursor: pointer;
+      text-shadow: 0 0 10px #fff;
+      box-shadow: 0 0 15px #fff;
+      transition: 0.3s;
     }
 
-    @keyframes glow {
-      from {
-        text-shadow:
-          0 0 10px white,
-          0 0 20px white,
-          0 0 40px #ccc,
-          0 0 80px #fff;
-      }
-
-      to {
-        text-shadow:
-          0 0 20px white,
-          0 0 40px #eee,
-          0 0 80px white,
-          0 0 160px #fff;
-      }
-    }
-
-    @keyframes clickEffect {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(5);
-        opacity: 0;
-      }
-    }
-
-    .click-animation {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: white;
-      box-shadow: 0 0 40px white;
-      pointer-events: none;
-      animation: clickEffect 0.6s ease-out forwards;
+    #skip-btn:hover {
+      background-color: #555555;
     }
   </style>
 </head>
-
 <body>
-  <div class="container">
-    <h1 class="neon-text">FLIXAI</h1>
-    <a class="neon-button" id="enterButton">Entrer</a>
+
+  <!-- Conteneur du robot -->
+  <div class="viewer-container">
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.85/build/spline-viewer.js"></script>
+    <spline-viewer url="https://prod.spline.design/Y4T3aRR9fxfA2bKG/scene.splinecode"></spline-viewer>
   </div>
 
+  <!-- Texte de présentation -->
+  <div class="intro" id="intro-text"></div>
+
+  <!-- Bouton Skip -->
+  <button id="skip-btn">Passer l’intro</button>
+
   <script>
-    const button = document.getElementById('enterButton');
+    const text = [
+      "Bienvenue sur FlixAI.",
+      "Je suis votre robot assistant virtuel et je vais vous guider à travers notre univers d’IA.",
+      "FlixAI répertorie des dizaines d’outils et d’intelligences artificielles pour faciliter vos projets.",
+      "Que vous cherchiez à générer du contenu, automatiser des tâches ou découvrir de nouvelles idées, vous êtes au bon endroit.",
+      "Nous avons regroupé toutes les IA les plus utiles et performantes en un seul site.",
+      "Explorez les catégories, testez les outils et trouvez exactement ce dont vous avez besoin.",
+      "Chaque IA est choisie pour sa qualité et son efficacité afin que vous gagniez du temps et soyez plus productif.",
+      "Préparez-vous à plonger dans le monde fascinant de l’intelligence artificielle."
+    ];
 
-    button.addEventListener('click', (e) => {
-      // Effet de clic visuel
-      const ripple = document.createElement('span');
-      ripple.classList.add('click-animation');
-      ripple.style.left = e.pageX - 50 + 'px';
-      ripple.style.top = e.pageY - 50 + 'px';
-      document.body.appendChild(ripple);
+    const introDiv = document.getElementById("intro-text");
+    let i = 0;
 
-      // Supprimer l'effet après animation
-      setTimeout(() => {
-        ripple.remove();
-        // Redirection après 0.6s (le temps de l’animation)
-        window.location.href = "ia.html";
-      }, 600);
+    function typeLine() {
+      if (i < text.length) {
+        introDiv.innerHTML = text[i];
+        i++;
+        setTimeout(typeLine, 4000);
+      } else {
+        // Message de fin
+        introDiv.innerHTML = "Bonne expérience !";
+        // Redirection après 2 secondes
+        setTimeout(() => {
+          window.location.href = "ia.html";
+        }, 2000);
+      }
+    }
+
+    window.onload = typeLine;
+
+    document.getElementById("skip-btn").addEventListener("click", () => {
+      window.location.href = "ia.html";
     });
   </script>
-</body>
 
+</body>
 </html>
