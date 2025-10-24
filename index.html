@@ -61,7 +61,7 @@
 
   /* Intro content */
   .viewer-container, .intro, #skip-btn {
-    display: none; /* caché au départ */
+    display: none;
   }
 
   .viewer-container {
@@ -111,6 +111,12 @@
 
   #skip-btn:hover { background-color: #555555; }
 
+  /* Progression IA */
+  #progress {
+    margin-top: 10px;
+    font-size: 0.9em;
+    opacity: 0.7;
+  }
 </style>
 </head>
 <body>
@@ -129,7 +135,8 @@
   <div class="pl__dot"></div>
   <div class="pl__dot"></div>
   <div class="pl__dot"></div>
-  <div class="pl__text">Loading…</div>
+  <div class="pl__text">Chargement…</div>
+  <div id="progress">Chargement des IA : 0%</div>
 </div>
 
 <!-- Contenu principal -->
@@ -148,7 +155,6 @@ const text = [
   "FlixAI répertorie des dizaines d’outils et d’intelligences artificielles pour faciliter vos projets.",
   "Que vous cherchiez à générer du contenu, automatiser des tâches ou découvrir de nouvelles idées, vous êtes au bon endroit.",
   "Nous avons regroupé toutes les IA les plus utiles et performantes en un seul site.",
-  "Explorez les catégories, testez les outils et trouvez exactement ce dont vous avez besoin.",
   "Chaque IA est choisie pour sa qualité et son efficacité afin que vous gagniez du temps et soyez plus productif.",
   "Préparez-vous à plonger dans le monde fascinant de l’intelligence artificielle."
 ];
@@ -157,15 +163,40 @@ const loader = document.getElementById("loader");
 const viewer = document.querySelector(".viewer-container");
 const introDiv = document.getElementById("intro-text");
 const skipBtn = document.getElementById("skip-btn");
+const progress = document.getElementById("progress");
 
-// Affichage après 4 secondes de chargement
+// ⚙️ Étape 1 : Précharger les IA depuis data.json
+async function preloadIA() {
+  try {
+    const response = await fetch("data.json");
+    const data = await response.json();
+    let loaded = 0;
+    const total = data.length || 1;
+
+    // Simulation du chargement progressif
+    for (let i = 0; i < data.length; i++) {
+      await new Promise(r => setTimeout(r, 50)); // petite pause
+      loaded++;
+      const percent = Math.min(100, Math.round((loaded / total) * 100));
+      progress.textContent = `Chargement des IA : ${percent}%`;
+    }
+
+    console.log("✅ IA préchargées :", data.length);
+  } catch (err) {
+    console.error("Erreur lors du chargement des IA :", err);
+  }
+}
+
+// Démarre le préchargement
+preloadIA();
+
+// ⚙️ Étape 2 : Animation d’intro
 setTimeout(() => {
   loader.style.display = "none";
   viewer.style.display = "block";
   introDiv.style.display = "block";
   skipBtn.style.display = "block";
 
-  // Lancer le texte
   let i = 0;
   function typeLine() {
     if (i < text.length) {
@@ -178,10 +209,9 @@ setTimeout(() => {
     }
   }
   typeLine();
-
 }, 4000);
 
-// Bouton skip
+// ⚡ Étape 3 : Bouton “Passer l’intro”
 skipBtn.addEventListener("click", () => {
   window.location.href = "ia.html";
 });
