@@ -1,128 +1,191 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FlixAI - Introduction</title>
-  <style>
-    body {
-      margin: 0;
-      background-color: #0a0a0a;
-      color: white;
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      height: 100vh;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlixAI - Introduction</title>
+<style>
+  body {
+    margin: 0;
+    background-color: #0a0a0a;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-    .viewer-container {
-      width: 100%;
-      height: 65vh;
-      opacity: 0;
-      transform: translateY(-50px);
-      animation: robotEntrance 2s forwards;
-      animation-delay: 0.5s;
-    }
+  /* Loader Styles */
+  .pl {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 
-    @keyframes robotEntrance {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+  .pl__dot {
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    margin: 5px;
+    display: inline-block;
+    animation: pl-bounce 1s infinite;
+  }
 
-    spline-viewer {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+  .pl__dot:nth-child(2) { animation-delay: 0.1s; }
+  .pl__dot:nth-child(3) { animation-delay: 0.2s; }
+  .pl__dot:nth-child(4) { animation-delay: 0.3s; }
+  .pl__dot:nth-child(5) { animation-delay: 0.4s; }
+  .pl__dot:nth-child(6) { animation-delay: 0.5s; }
+  .pl__dot:nth-child(7) { animation-delay: 0.6s; }
+  .pl__dot:nth-child(8) { animation-delay: 0.7s; }
+  .pl__dot:nth-child(9) { animation-delay: 0.8s; }
+  .pl__dot:nth-child(10) { animation-delay: 0.9s; }
+  .pl__dot:nth-child(11) { animation-delay: 1s; }
+  .pl__dot:nth-child(12) { animation-delay: 1.1s; }
 
-    .intro {
-      text-align: center;
-      max-width: 700px;
-      margin-top: 20px;
-      font-size: 1.2em;
-      animation: fadeIn 2s ease forwards;
-      opacity: 0;
-      animation-delay: 2.5s;
-    }
+  @keyframes pl-bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+  }
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+  .pl__text {
+    margin-top: 15px;
+    font-size: 1.2em;
+  }
 
-    #skip-btn {
-      margin-top: 25px;
-      padding: 12px 28px;
-      background-color: #333333;
-      color: #fff;
-      border: 2px solid #fff;
-      border-radius: 30px;
-      font-size: 1em;
-      cursor: pointer;
-      text-shadow: 0 0 10px #fff;
-      box-shadow: 0 0 15px #fff;
-      transition: 0.3s;
-    }
+  /* Intro content */
+  .viewer-container, .intro, #skip-btn {
+    display: none; /* caché au départ */
+  }
 
-    #skip-btn:hover {
-      background-color: #555555;
-    }
-  </style>
+  .viewer-container {
+    width: 100%;
+    height: 65vh;
+    opacity: 0;
+    transform: translateY(-50px);
+    animation: robotEntrance 2s forwards;
+    animation-delay: 0.5s;
+  }
+
+  @keyframes robotEntrance {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  spline-viewer {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .intro {
+    text-align: center;
+    max-width: 700px;
+    margin-top: 20px;
+    font-size: 1.2em;
+    animation: fadeIn 2s ease forwards;
+    opacity: 0;
+    animation-delay: 2.5s;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  #skip-btn {
+    margin-top: 25px;
+    padding: 12px 28px;
+    background-color: #333333;
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    font-size: 1em;
+    cursor: pointer;
+    text-shadow: 0 0 10px #fff;
+    box-shadow: 0 0 15px #fff;
+    transition: 0.3s;
+  }
+
+  #skip-btn:hover { background-color: #555555; }
+
+</style>
 </head>
 <body>
 
-  <!-- Conteneur du robot -->
-  <div class="viewer-container">
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.85/build/spline-viewer.js"></script>
-    <spline-viewer url="https://prod.spline.design/Y4T3aRR9fxfA2bKG/scene.splinecode"></spline-viewer>
-  </div>
+<!-- Loader -->
+<div class="pl" id="loader">
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__dot"></div>
+  <div class="pl__text">Loading…</div>
+</div>
 
-  <!-- Texte de présentation -->
-  <div class="intro" id="intro-text"></div>
+<!-- Contenu principal -->
+<div class="viewer-container">
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.10.85/build/spline-viewer.js"></script>
+  <spline-viewer url="https://prod.spline.design/Y4T3aRR9fxfA2bKG/scene.splinecode"></spline-viewer>
+</div>
 
-  <!-- Bouton Skip -->
-  <button id="skip-btn">Passer l’intro</button>
+<div class="intro" id="intro-text"></div>
+<button id="skip-btn">Passer l’intro</button>
 
-  <script>
-    const text = [
-      "Bienvenue sur FlixAI.",
-      "Je suis votre robot assistant virtuel et je vais vous guider à travers notre univers d’IA.",
-      "FlixAI répertorie des dizaines d’outils et d’intelligences artificielles pour faciliter vos projets.",
-      "Que vous cherchiez à générer du contenu, automatiser des tâches ou découvrir de nouvelles idées, vous êtes au bon endroit.",
-      "Nous avons regroupé toutes les IA les plus utiles et performantes en un seul site.",
-      "Explorez les catégories, testez les outils et trouvez exactement ce dont vous avez besoin.",
-      "Chaque IA est choisie pour sa qualité et son efficacité afin que vous gagniez du temps et soyez plus productif.",
-      "Préparez-vous à plonger dans le monde fascinant de l’intelligence artificielle."
-    ];
+<script>
+const text = [
+  "Bienvenue sur FlixAI.",
+  "Je suis votre robot assistant virtuel et je vais vous guider à travers notre univers d’IA.",
+  "FlixAI répertorie des dizaines d’outils et d’intelligences artificielles pour faciliter vos projets.",
+  "Que vous cherchiez à générer du contenu, automatiser des tâches ou découvrir de nouvelles idées, vous êtes au bon endroit.",
+  "Nous avons regroupé toutes les IA les plus utiles et performantes en un seul site.",
+  "Explorez les catégories, testez les outils et trouvez exactement ce dont vous avez besoin.",
+  "Chaque IA est choisie pour sa qualité et son efficacité afin que vous gagniez du temps et soyez plus productif.",
+  "Préparez-vous à plonger dans le monde fascinant de l’intelligence artificielle."
+];
 
-    const introDiv = document.getElementById("intro-text");
-    let i = 0;
+const loader = document.getElementById("loader");
+const viewer = document.querySelector(".viewer-container");
+const introDiv = document.getElementById("intro-text");
+const skipBtn = document.getElementById("skip-btn");
 
-    function typeLine() {
-      if (i < text.length) {
-        introDiv.innerHTML = text[i];
-        i++;
-        setTimeout(typeLine, 4000);
-      } else {
-        // Message de fin
-        introDiv.innerHTML = "Bonne expérience !";
-        // Redirection après 2 secondes
-        setTimeout(() => {
-          window.location.href = "ia.html";
-        }, 2000);
-      }
+// Affichage après 4 secondes de chargement
+setTimeout(() => {
+  loader.style.display = "none";
+  viewer.style.display = "block";
+  introDiv.style.display = "block";
+  skipBtn.style.display = "block";
+
+  // Lancer le texte
+  let i = 0;
+  function typeLine() {
+    if (i < text.length) {
+      introDiv.innerHTML = text[i];
+      i++;
+      setTimeout(typeLine, 4000);
+    } else {
+      introDiv.innerHTML = "Bonne expérience !";
+      setTimeout(() => { window.location.href = "ia.html"; }, 2000);
     }
+  }
+  typeLine();
 
-    window.onload = typeLine;
+}, 4000);
 
-    document.getElementById("skip-btn").addEventListener("click", () => {
-      window.location.href = "ia.html";
-    });
-  </script>
+// Bouton skip
+skipBtn.addEventListener("click", () => {
+  window.location.href = "ia.html";
+});
+</script>
 
 </body>
 </html>
