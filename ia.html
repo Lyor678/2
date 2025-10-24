@@ -248,6 +248,7 @@
     }
 
     async function loadData(){
+      const startTime = Date.now();
       try{
         const res=await fetch("data.json");
         if(!res.ok) throw new Error("Impossible de charger data.json");
@@ -258,7 +259,11 @@
       } catch(err){
         grid.innerHTML=`<div style="color:#f87171;font-weight:700">Erreur: ${err.message}</div>`;
       } finally {
-        loaderPage.style.display = "none"; // Disparaît instantanément
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, 10000 - elapsed);
+        setTimeout(() => {
+          loaderPage.style.display = "none"; // Disparaît instantanément après 10s minimum
+        }, remaining);
       }
     }
 
