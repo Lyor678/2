@@ -78,82 +78,25 @@
 
     footer { text-align:center; color:#777; font-size:13px; padding:30px 0; }
 
-    /* === PAGE DE CHARGEMENT === */
     #loader-page {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: #000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000; display: flex; align-items: center; justify-content: center;
       z-index: 9999;
     }
 
-    /* From Uiverse.io by alexruix */
-    .loader {
-      width: 112px;
-      height: 112px;
-      position: relative;
-    }
+    .loader { width: 112px; height: 112px; position: relative; }
+    .box1,.box2,.box3 { border: 16px solid #f5f5f5; box-sizing: border-box; position: absolute; display: block; }
+    .box1 { width: 112px; height: 48px; margin-top: 64px; animation: abox1 4s 1s forwards ease-in-out infinite; }
+    .box2 { width: 48px; height: 48px; animation: abox2 4s 1s forwards ease-in-out infinite; }
+    .box3 { width: 48px; height: 48px; margin-left: 64px; animation: abox3 4s 1s forwards ease-in-out infinite; }
 
-    .box1,
-    .box2,
-    .box3 {
-      border: 16px solid #f5f5f5;
-      box-sizing: border-box;
-      position: absolute;
-      display: block;
-    }
-
-    .box1 {
-      width: 112px;
-      height: 48px;
-      margin-top: 64px;
-      margin-left: 0px;
-      animation: abox1 4s 1s forwards ease-in-out infinite;
-    }
-
-    .box2 {
-      width: 48px;
-      height: 48px;
-      margin-top: 0px;
-      margin-left: 0px;
-      animation: abox2 4s 1s forwards ease-in-out infinite;
-    }
-
-    .box3 {
-      width: 48px;
-      height: 48px;
-      margin-top: 0px;
-      margin-left: 64px;
-      animation: abox3 4s 1s forwards ease-in-out infinite;
-    }
-
-    @keyframes abox1 {
-      0% { width: 112px; height: 48px; margin-top: 64px; margin-left: 0px; }
-      12.5%, 62.5% { width: 48px; height: 48px; margin-top: 64px; margin-left: 0px; }
-      75% { width: 48px; height: 112px; margin-top: 0px; margin-left: 0px; }
-      100% { width: 48px; height: 48px; margin-top: 0px; margin-left: 0px; }
-    }
-
-    @keyframes abox2 {
-      0%, 37.5% { width: 48px; height: 48px; margin-top: 0px; margin-left: 0px; }
-      50% { width: 112px; height: 48px; margin-top: 0px; margin-left: 0px; }
-      62.5%, 100% { width: 48px; height: 48px; margin-top: 0px; margin-left: 64px; }
-    }
-
-    @keyframes abox3 {
-      0%, 12.5% { width: 48px; height: 48px; margin-top: 0px; margin-left: 64px; }
-      25% { width: 48px; height: 112px; margin-top: 0px; margin-left: 64px; }
-      37.5%, 87.5% { width: 48px; height: 48px; margin-top: 64px; margin-left: 64px; }
-      100% { width: 112px; height: 48px; margin-top: 64px; margin-left: 0px; }
-    }
+    @keyframes abox1 {0%{width:112px;height:48px;margin-top:64px;}12.5%,62.5%{width:48px;height:48px;margin-top:64px;}75%{width:48px;height:112px;margin-top:0;}100%{width:48px;height:48px;margin-top:0;}}
+    @keyframes abox2 {0%,37.5%{width:48px;height:48px;}50%{width:112px;height:48px;}62.5%,100%{width:48px;height:48px;margin-left:64px;}}
+    @keyframes abox3 {0%,12.5%{width:48px;height:48px;margin-left:64px;}25%{width:48px;height:112px;margin-left:64px;}37.5%,87.5%{width:48px;height:48px;margin-top:64px;margin-left:64px;}100%{width:112px;height:48px;margin-top:64px;margin-left:0;}}
   </style>
 </head>
 <body data-theme="dark">
 
-  <!-- === PAGE DE CHARGEMENT === -->
   <div id="loader-page">
     <div class="loader">
       <span class="box1"></span>
@@ -186,39 +129,36 @@
   <footer>FlixAI — Découvrez les meilleures IA 🤖</footer>
 
   <script>
+    const grid = document.getElementById('grid');
+    const categoryList = document.getElementById('categoryList');
+    const searchBar = document.getElementById('searchBar');
+    const loaderPage = document.getElementById('loader-page');
     const menuBtn = document.getElementById('menuBtn');
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
-    const grid = document.getElementById('grid');
-    const categoryList = document.getElementById('categoryList');
     const themeToggle = document.getElementById('themeToggle');
-    const searchBar = document.getElementById('searchBar');
-    const loaderPage = document.getElementById('loader-page');
 
-    const categories = [
-      "Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea",
-      "Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation"
-    ];
+    const categories = ["Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea","Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation"];
 
     let allData = [];
-    
+    let displayedCount = 0;
+    const batchSize = 30;
+    let isLoadingMore = false;
+
     menuBtn.addEventListener("click", toggleMenu);
     overlay.addEventListener("click", closeMenu);
-    themeToggle.addEventListener("click", () => {
-      const current = document.body.getAttribute("data-theme");
-      if(current==="dark"){document.body.removeAttribute("data-theme"); themeToggle.textContent="🌙";}
-      else {document.body.setAttribute("data-theme","dark"); themeToggle.textContent="☀️";}
-    });
-    searchBar.addEventListener("input", () => { filterByKeyword(searchBar.value.trim()); });
+    themeToggle.addEventListener("click", toggleTheme);
+    searchBar.addEventListener("input", () => filterByKeyword(searchBar.value.trim()));
 
     function toggleMenu(){ sidebar.classList.toggle("open"); overlay.classList.toggle("active"); menuBtn.classList.toggle("active"); }
     function closeMenu(){ sidebar.classList.remove("open"); overlay.classList.remove("active"); menuBtn.classList.remove("active"); }
+    function toggleTheme(){ const c=document.body.getAttribute("data-theme"); if(c==="dark"){document.body.removeAttribute("data-theme");themeToggle.textContent="🌙";}else{document.body.setAttribute("data-theme","dark");themeToggle.textContent="☀️";}}
 
     function renderCategories(){
       categoryList.innerHTML = "";
       const allLi = document.createElement("li");
       allLi.textContent = "Toutes les catégories";
-      allLi.addEventListener("click",()=>{ showCards(allData); closeMenu(); });
+      allLi.addEventListener("click",()=>{ showCards(allData,true); closeMenu(); });
       categoryList.appendChild(allLi);
       categories.forEach(cat=>{
         const li=document.createElement("li");
@@ -228,23 +168,27 @@
       });
     }
 
-    function filterByKeyword(query){
-      if(!query) return showCards(allData);
-      const filtered=allData.filter(item=>(item.handle+" "+item.description).toLowerCase().includes(query.toLowerCase()));
-      showCards(filtered);
+    function createCard(item){
+      const card=document.createElement("div"); card.className="card";
+      const img=document.createElement("img"); img.src=item.image||"https://ibb.co/k2RknvYG"; img.alt=item.handle;
+      const header=document.createElement("div"); header.className="card-header"; header.innerHTML=`<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id||"?"}</div>`;
+      const body=document.createElement("div"); body.className="card-body"; body.textContent=item.description||"(Pas de description)";
+      const footer=document.createElement("a"); footer.className="card-footer"; footer.href=item.website||"#"; footer.target="_blank"; footer.textContent="Visiter le site";
+      card.append(img,header,body,footer);
+      return card;
     }
 
-    function showCards(data){
-      grid.innerHTML="";
-      data.forEach(item=>{
-        const card=document.createElement("div"); card.className="card";
-        const img=document.createElement("img"); img.src=item.image||"https://ibb.co/k2RknvYG"; img.alt=item.handle;
-        const header=document.createElement("div"); header.className="card-header"; header.innerHTML=`<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id||"?"}</div>`;
-        const body=document.createElement("div"); body.className="card-body"; body.textContent=item.description||"(Pas de description)";
-        const footer=document.createElement("a"); footer.className="card-footer"; footer.href=item.website||"#"; footer.target="_blank"; footer.textContent="Visiter le site";
-        card.appendChild(img); card.appendChild(header); card.appendChild(body); card.appendChild(footer);
-        grid.appendChild(card);
-      });
+    function showCards(data, reset=false){
+      if(reset){grid.innerHTML="";displayedCount=0;}
+      const slice = data.slice(displayedCount, displayedCount + batchSize);
+      slice.forEach(item => grid.appendChild(createCard(item)));
+      displayedCount += slice.length;
+    }
+
+    function filterByKeyword(query){
+      if(!query){showCards(allData,true);return;}
+      const filtered=allData.filter(item=>(item.handle+" "+item.description).toLowerCase().includes(query.toLowerCase()));
+      showCards(filtered,true);
     }
 
     async function loadData(){
@@ -255,15 +199,28 @@
         const data=await res.json();
         allData=Array.isArray(data)?data:[data];
         renderCategories();
-        showCards(allData);
-      } catch(err){
+        showCards(allData,true);
+        window.addEventListener("scroll",handleScroll);
+      }catch(err){
         grid.innerHTML=`<div style="color:#f87171;font-weight:700">Erreur: ${err.message}</div>`;
-      } finally {
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, 10000 - elapsed);
-        setTimeout(() => {
-          loaderPage.style.display = "none"; // Disparaît instantanément après 10s minimum
-        }, remaining);
+      }finally{
+        const elapsed=Date.now()-startTime;
+        const remaining=Math.max(0,10000-elapsed);
+        setTimeout(()=>{loaderPage.style.display="none";},remaining);
+      }
+    }
+
+    function handleScroll(){
+      if(isLoadingMore) return;
+      const scrollY = window.scrollY;
+      const visible = window.innerHeight;
+      const fullHeight = document.body.offsetHeight;
+      if(fullHeight - (scrollY + visible) < 800 && displayedCount < allData.length){
+        isLoadingMore = true;
+        setTimeout(()=>{
+          showCards(allData);
+          isLoadingMore = false;
+        },500);
       }
     }
 
