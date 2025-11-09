@@ -6,52 +6,132 @@
   <title>FlixAI — Les Meilleures IA</title>
   <style>
     :root {
-      --bg: #f4f4f4;
-      --text: #1a1a1a;
-      --accent: #2f2f2f;
-      --card-bg: rgba(255,255,255,0.25);
-      --glass-border: rgba(255,255,255,0.3);
-      --shadow: rgba(0,0,0,0.1);
-    }
-
-    [data-theme="dark"] {
       --bg: #0c0c0f;
       --text: #e5e5e5;
-      --accent: #d1d1d1;
+      --accent: #bbaaff;
       --card-bg: rgba(25,25,28,0.55);
       --glass-border: rgba(255,255,255,0.08);
       --shadow: rgba(0,0,0,0.5);
     }
 
     * { box-sizing: border-box; }
-    body { margin:0; font-family:"Poppins",system-ui,sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; transition: background 0.5s,color 0.5s; }
+    body {
+      margin:0;
+      font-family:"Poppins",system-ui,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      overflow-x:hidden;
+      min-height:100vh;
+      transition: background 0.5s,color 0.5s;
+    }
+
+    /* === LOADER === */
+    #loader-page {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loader {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader span {
+      width: 20px;
+      height: 20px;
+      margin: 0 5px;
+      border-radius: 50%;
+      background: #bbaaff;
+      animation: bounce 1.2s cubic-bezier(0.5, 0.05, 0.1, 0.9) infinite;
+    }
+
+    .loader span:nth-child(1) { animation-delay: 0s; }
+    .loader span:nth-child(2) { animation-delay: 0.2s; }
+    .loader span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
 
     /* === HEADER === */
     header {
-      position: fixed; top:0; left:0; width:100%; padding:16px 20px;
+      position: fixed;
+      top:0; left:0;
+      width:100%;
+      padding:16px 20px;
       border-bottom:1px solid var(--glass-border);
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(16px);
       box-shadow: 0 4px 20px var(--shadow);
-      display:flex; align-items:center; justify-content:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       z-index:10;
     }
 
-    h1 { margin:0; font-size:22px; font-weight:600; color:var(--accent); letter-spacing:0.5px; }
+    h1 {
+      margin:0;
+      font-size:26px;
+      font-weight:700;
+      color:transparent;
+      background:linear-gradient(135deg,#8a00ff,#4f9cff);
+      background-clip:text;
+      -webkit-background-clip:text;
+      letter-spacing:1px;
+      text-shadow: 0 0 20px rgba(155, 100, 255, 0.5);
+    }
 
-    .menu-btn { position:absolute; left:20px; border:none; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; width:26px; height:18px; z-index:20; background:none; }
-    .menu-btn span { display:block; height:3px; width:100%; background:var(--text); border-radius:3px; transition: all .3s ease; }
+    .menu-btn {
+      position:absolute;
+      left:20px;
+      border:none;
+      cursor:pointer;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      width:26px; height:18px;
+      z-index:20;
+      background:none;
+    }
+    .menu-btn span {
+      display:block; height:3px; width:100%;
+      background:var(--text);
+      border-radius:3px;
+      transition: all .3s ease;
+    }
     .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(7px);}
     .menu-btn.active span:nth-child(2){opacity:0;}
     .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-7px);}
 
-    .theme-toggle { position:absolute; right:20px; border:none; font-size:20px; cursor:pointer; background:none; color:var(--text); transition: transform 0.3s ease; }
+    .theme-toggle {
+      position:absolute;
+      right:20px;
+      border:none;
+      font-size:20px;
+      cursor:pointer;
+      background:none;
+      color:var(--text);
+      transition: transform 0.3s ease;
+    }
     .theme-toggle:hover { transform: scale(1.1); }
 
     /* === SIDEBAR === */
     .sidebar {
-      position: fixed; top:0; left:-260px; width:220px; height:100%;
-      background: var(--card-bg); backdrop-filter: blur(18px);
+      position: fixed;
+      top:0; left:-260px;
+      width:220px; height:100%;
+      background: rgba(25,25,28,0.4);
+      backdrop-filter: blur(22px);
       border-right:1px solid var(--glass-border);
       box-shadow:4px 0 20px var(--shadow);
       transition:left 0.4s ease;
@@ -60,31 +140,72 @@
       overflow-y:auto;
     }
     .sidebar.open { left:0; }
-    .sidebar h2 { font-size:15px; color:var(--accent); margin:10px 20px; border-bottom:1px solid var(--glass-border); padding-bottom:6px; }
+    .sidebar h2 {
+      font-size:15px; color:var(--accent);
+      margin:10px 20px;
+      border-bottom:1px solid var(--glass-border);
+      padding-bottom:6px;
+    }
     .sidebar ul { list-style:none; padding:0; margin:0; }
-    .sidebar li { padding:10px 20px; cursor:pointer; color:var(--text); border-left:3px solid transparent; transition: all 0.3s ease; }
-    .sidebar li:hover { background: rgba(255,255,255,0.1); border-left:3px solid var(--accent); }
+    .sidebar li {
+      padding:10px 20px;
+      cursor:pointer;
+      color:var(--text);
+      border-left:3px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .sidebar li:hover {
+      background: rgba(255,255,255,0.1);
+      border-left:3px solid var(--accent);
+    }
 
-    .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(4px); opacity:0; visibility:hidden; transition:opacity .4s ease; z-index:5; }
+    .overlay {
+      position:fixed; top:0; left:0;
+      width:100%; height:100%;
+      background:rgba(0,0,0,0.3);
+      backdrop-filter:blur(4px);
+      opacity:0; visibility:hidden;
+      transition:opacity .4s ease;
+      z-index:5;
+    }
     .overlay.active { opacity:1; visibility:visible; }
 
     /* === BARRE DE RECHERCHE === */
-    .search-container { display:flex; justify-content:center; padding:24px; margin-top:90px; }
+    .search-container {
+      display:flex;
+      justify-content:center;
+      padding:24px;
+      margin-top:90px;
+    }
     .search-bar {
       width:80%; max-width:600px;
-      padding:12px 18px; border-radius:14px; border:1px solid var(--glass-border);
-      color:var(--text); font-size:15px; outline:none;
-      background:rgba(255,255,255,0.15); backdrop-filter: blur(10px);
-      box-shadow:0 4px 12px var(--shadow);
+      padding:12px 18px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,0.25);
+      color:var(--text);
+      font-size:15px;
+      outline:none;
+      background:rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      box-shadow:0 4px 20px rgba(120,80,255,0.2);
       transition: box-shadow 0.3s ease, background 0.3s ease;
     }
-    .search-bar:focus { box-shadow:0 6px 18px rgba(0,0,0,0.3); }
+    .search-bar:focus {
+      box-shadow:0 6px 24px rgba(140,100,255,0.5);
+      background:rgba(255,255,255,0.15);
+    }
 
     /* === GRILLE === */
     main { margin-top:40px; padding:0 24px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; max-width:1300px; margin:40px auto; }
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+      gap:24px;
+      max-width:1300px;
+      margin:40px auto;
+    }
 
-    /* === STYLE DES CARTES — effet LED au survol === */
+    /* === CARTES AVEC NÉONS BLEU/VIOLET === */
     .card {
       position:relative;
       border-radius:20px;
@@ -97,7 +218,7 @@
       position:absolute;
       inset:0;
       border-radius:20px;
-      background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+      background-image: linear-gradient(163deg, #7a00ff 0%, #0066ff 100%);
       opacity:0;
       transition:opacity .3s ease;
       z-index:0;
@@ -105,12 +226,12 @@
 
     .card:hover::before {
       opacity:1;
-      box-shadow: 0px 0px 30px 1px rgba(0,255,117,0.3);
+      box-shadow: 0px 0px 30px 1px rgba(120,80,255,0.5);
     }
 
     .card-inner {
       position:relative;
-      background-color:#1a1a1a;
+      background-color:#141414;
       border-radius:18px;
       overflow:hidden;
       display:flex;
@@ -119,21 +240,43 @@
       z-index:1;
       transition:transform .2s ease;
     }
-
     .card-inner:hover { transform:scale(0.98); }
 
-    .card img { width:100%; height:160px; object-fit:cover; border-bottom:1px solid var(--glass-border); }
+    .card img {
+      width:100%;
+      height:160px;
+      object-fit:cover;
+      border-bottom:1px solid var(--glass-border);
+    }
+
     .card-header { padding:16px; }
     .card-title { font-size:18px; font-weight:600; color:#fff; }
     .card-meta { font-size:12px; color:#aaa; margin-top:4px; }
     .card-body { padding:0 16px 16px; font-size:14px; color:#ddd; flex-grow:1; }
-    .card-footer { background:rgba(255,255,255,0.08); text-align:center; padding:12px; text-decoration:none; color:#00ff75; font-weight:500; transition:background 0.3s ease; }
-    .card-footer:hover { background:rgba(255,255,255,0.15); }
+    .card-footer {
+      background:rgba(255,255,255,0.08);
+      text-align:center;
+      padding:12px;
+      text-decoration:none;
+      color:#a08bff;
+      font-weight:500;
+      transition:background 0.3s ease;
+    }
+    .card-footer:hover {
+      background:rgba(255,255,255,0.15);
+    }
 
     footer { text-align:center; color:#777; font-size:13px; padding:30px 0; }
   </style>
 </head>
 <body data-theme="dark">
+
+  <!-- LOADER -->
+  <div id="loader-page">
+    <div class="loader">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
 
   <div class="overlay" id="overlay"></div>
 
@@ -166,9 +309,9 @@
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('overlay');
     const themeToggle = document.getElementById('themeToggle');
+    const loaderPage = document.getElementById('loader-page');
 
     const categories = ["Business","Productivity","Task Automation","Copywriting","Image Generation","SEO","Startup Idea","Social Media"];
-
     let allData = [];
 
     menuBtn.addEventListener("click", toggleMenu);
@@ -236,6 +379,7 @@
     }
 
     async function loadData(){
+      const start = Date.now();
       try{
         const res=await fetch("data.json");
         if(!res.ok) throw new Error("Impossible de charger data.json");
@@ -245,6 +389,11 @@
         showCards(allData,true);
       }catch(err){
         grid.innerHTML=`<div style="color:#f87171;font-weight:700">Erreur: ${err.message}</div>`;
+      }finally{
+        const elapsed=Date.now()-start;
+        const minLoadTime=2000;
+        const delay=Math.max(0,minLoadTime-elapsed);
+        setTimeout(()=>{loaderPage.style.display="none";},delay);
       }
     }
 
