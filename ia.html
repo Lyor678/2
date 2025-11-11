@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
@@ -7,124 +6,138 @@
   <title>FlixAI — Les Meilleures IA</title>
   <style>
     :root {
-      --bg: #f5f5f5;
+      --bg: #f4f4f4;
       --text: #1a1a1a;
-      --accent: #7a00ff;
+      --accent: #2f2f2f;
       --card-bg: rgba(255,255,255,0.25);
-      --glass-border: rgba(0,0,0,0.1);
+      --glass-border: rgba(255,255,255,0.3);
       --shadow: rgba(0,0,0,0.1);
     }
+
     [data-theme="dark"] {
       --bg: #0c0c0f;
       --text: #e5e5e5;
-      --accent: #bbaaff;
+      --accent: #d1d1d1;
       --card-bg: rgba(25,25,28,0.55);
       --glass-border: rgba(255,255,255,0.08);
       --shadow: rgba(0,0,0,0.5);
     }
 
     * { box-sizing: border-box; }
-    body {
-      margin:0; font-family:"Poppins",system-ui,sans-serif;
-      background:var(--bg); color:var(--text);
-      overflow-x:hidden; min-height:100vh;
-      transition: background 0.5s,color 0.5s;
+    body { margin:0; font-family:"Poppins",system-ui,sans-serif; background:var(--bg); color:var(--text); overflow-x:hidden; min-height:100vh; transition: background 0.5s,color 0.5s; }
+
+    /* === Header et boutons flous/transparents === */
+    header, 
+    .search-bar, 
+    .card, 
+    .menu-btn, 
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
     }
 
-    /* Loader */
-    #loader-page {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:#000; display:flex; align-items:center; justify-content:center;
-      z-index:9999;
+    [data-theme="dark"] header,
+    [data-theme="dark"] .search-bar,
+    [data-theme="dark"] .card,
+    [data-theme="dark"] .menu-btn,
+    [data-theme="dark"] .theme-toggle {
+      background: rgba(25, 25, 28, 0.35);
+      backdrop-filter: blur(12px);
     }
-    .loader span {
-      width:20px; height:20px; margin:0 5px; border-radius:50%;
-      background:#bbaaff;
-      animation:bounce 1.2s cubic-bezier(0.5,0.05,0.1,0.9) infinite;
-    }
-    .loader span:nth-child(1){animation-delay:0s;}
-    .loader span:nth-child(2){animation-delay:0.2s;}
-    .loader span:nth-child(3){animation-delay:0.4s;}
-    @keyframes bounce {0%,80%,100%{transform:scale(0);opacity:0.5;}40%{transform:scale(1);opacity:1;}}
 
-    /* Header */
     header {
-      position:fixed; top:0; left:0; width:100%; padding:16px 20px;
+      position: fixed; top:0; left:0; width:100%; padding:16px 20px;
       border-bottom:1px solid var(--glass-border);
-      background:rgba(255,255,255,0.1); backdrop-filter:blur(16px);
-      display:flex; align-items:center; justify-content:center;
-      z-index:10;
+      box-shadow: 0 4px 20px var(--shadow); display:flex; align-items:center; justify-content:center; z-index:10;
     }
-    h1 {
-      margin:0; font-size:26px; font-weight:700;
-      color:transparent;
-      background:linear-gradient(135deg,#8a00ff,#4f9cff);
-      background-clip:text; -webkit-background-clip:text;
-      text-shadow:0 0 20px rgba(155,100,255,0.5);
-    }
-    .menu-btn{position:absolute;left:20px;background:none;border:none;cursor:pointer;}
-    .menu-btn span{display:block;height:3px;width:26px;margin:4px 0;background:var(--text);}
-    .theme-toggle{position:absolute;right:20px;border:none;font-size:20px;cursor:pointer;background:none;color:var(--text);}
 
-    /* Sidebar */
-    .sidebar{
-      position:fixed;top:0;left:-260px;width:220px;height:100%;
-      background:rgba(25,25,28,0.4);backdrop-filter:blur(20px);
-      border-right:1px solid var(--glass-border);
-      transition:left 0.4s ease;z-index:15;padding-top:80px;overflow-y:auto;
-    }
-    .sidebar.open{left:0;}
-    .sidebar li{padding:10px 20px;cursor:pointer;}
-    .overlay{position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.3);opacity:0;visibility:hidden;
-      transition:opacity .4s ease;z-index:5;}
-    .overlay.active{opacity:1;visibility:visible;}
+    h1 { margin:0; font-size:22px; font-weight:600; color:var(--accent); letter-spacing:0.5px; }
 
-    /* Search bar */
-    .search-container{display:flex;justify-content:center;padding:24px;margin-top:90px;}
-    .search-bar{
-      width:80%;max-width:600px;padding:12px 18px;border-radius:14px;
-      border:1px solid rgba(255,255,255,0.2);color:var(--text);
-      background:rgba(255,255,255,0.02);backdrop-filter:blur(25px);
-      box-shadow:0 4px 20px rgba(120,80,255,0.1);
-      transition:background .3s ease;
-    }
-    .search-bar:focus{background:rgba(255,255,255,0.06);}
+    .menu-btn { position:absolute; left:20px; border:none; cursor:pointer; display:flex; flex-direction:column; justify-content:space-between; width:26px; height:18px; z-index:20; }
+    .menu-btn span { display:block; height:3px; width:100%; background:var(--text); border-radius:3px; transition: all .3s ease; }
+    .menu-btn.active span:nth-child(1){transform:rotate(45deg) translateY(7px);}
+    .menu-btn.active span:nth-child(2){opacity:0;}
+    .menu-btn.active span:nth-child(3){transform:rotate(-45deg) translateY(-7px);}
 
-    /* Orb container */
-    .orb-space{
-      width:100%;height:280px;margin-top:40px;
-      display:flex;align-items:center;justify-content:center;
-    }
-    canvas.orb-canvas{width:100%;height:100%;max-width:600px;max-height:300px;}
+    .theme-toggle { position:absolute; right:20px; border:none; font-size:20px; cursor:pointer; color:var(--text); transition: transform 0.3s ease; }
+    .theme-toggle:hover { transform: scale(1.1); }
 
-    /* Grid */
-    main{margin-top:40px;padding:0 24px;}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-      gap:24px;max-width:1300px;margin:40px auto;}
+    .sidebar {
+      position: fixed; top:0; left:-280px; width:240px; height:100%; 
+      background: var(--card-bg); backdrop-filter:blur(18px); border-right:1px solid var(--glass-border);
+      box-shadow:4px 0 20px var(--shadow); transition:left 0.4s ease; z-index:15; padding-top:80px; overflow-y:auto;
+    }
+    .sidebar.open { left:0; }
+    .sidebar h2 { font-size:15px; color:var(--accent); margin:10px 20px; border-bottom:1px solid var(--glass-border); padding-bottom:6px; }
+    .sidebar ul { list-style:none; padding:0; margin:0; }
+    .sidebar li { padding:10px 20px; cursor:pointer; color:var(--text); border-left:3px solid transparent; transition: all 0.3s ease; }
+    .sidebar li:hover { background: rgba(255,255,255,0.1); border-left:3px solid var(--accent); }
 
-    /* Cards */
-    .card{position:relative;border-radius:20px;overflow:hidden;transition:.3s;}
-    .card::before{
-      content:"";position:absolute;inset:0;border-radius:20px;
-      background:linear-gradient(163deg,#7a00ff 0%,#0066ff 100%);
-      opacity:0;transition:opacity .3s ease;
+    .overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.3); backdrop-filter:blur(4px); opacity:0; visibility:hidden; transition:opacity .4s ease; z-index:5; }
+    .overlay.active { opacity:1; visibility:visible; }
+
+    .search-container { display:flex; justify-content:center; padding:24px; margin-top:90px; opacity:0; transform:translateX(-100%); animation: slideIn 1.2s ease forwards; animation-delay:0.4s; }
+    @keyframes slideIn { to { opacity:1; transform:translateX(0); } }
+    .search-bar { width:80%; max-width:600px; padding:12px 18px; border-radius:14px; border:1px solid var(--glass-border); color:var(--text); font-size:15px; outline:none; box-shadow:0 4px 12px var(--shadow); transition: box-shadow 0.3s ease, background 0.3s ease; }
+    .search-bar:focus { box-shadow:0 6px 18px rgba(0,0,0,0.3); }
+
+    main { margin-top:40px; padding:0 24px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; max-width:1300px; margin:40px auto; }
+
+    .card { position:relative; border:1px solid var(--glass-border); border-radius:18px; box-shadow:0 8px 24px var(--shadow); overflow:hidden; transition: transform .3s ease, box-shadow .3s ease; display:flex; flex-direction:column; }
+    .card:hover { transform:translateY(-6px); box-shadow:0 12px 28px rgba(0,0,0,0.3); }
+    .card::after { content:""; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%) scaleX(0); width:60%; height:4px; background:rgba(200,200,200,0.6); border-radius:2px; transition: transform 0.3s ease, opacity 0.3s ease; opacity:0; }
+    .card:hover::after { transform:translateX(-50%) scaleX(1); opacity:1; }
+    .card img { width:100%; height:160px; object-fit:cover; border-bottom:1px solid var(--glass-border); }
+    .card-header { padding:16px; }
+    .card-title { font-size:18px; font-weight:600; color:var(--accent); }
+    .card-meta { font-size:12px; color:#888; margin-top:4px; }
+    .card-body { padding:0 16px 16px; font-size:14px; color:var(--text); flex-grow:1; }
+    .card-footer { background:rgba(0,0,0,0.05); text-align:center; padding:12px; text-decoration:none; color:var(--accent); font-weight:500; transition:background 0.3s ease; }
+    .card-footer:hover { background:rgba(0,0,0,0.1); }
+
+    footer { text-align:center; color:#777; font-size:13px; padding:30px 0; }
+
+    /* === Nouveau loader fluide === */
+    #loader-page {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000; display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
     }
-    .card:hover::before{opacity:1;box-shadow:0 0 30px rgba(120,80,255,0.5);}
-    .card-inner{
-      position:relative;background:#141414;border-radius:18px;
-      overflow:hidden;display:flex;flex-direction:column;z-index:1;
+
+    .loader {
+      width: 80px; height: 80px;
+      display: flex; align-items: center; justify-content: center;
     }
-    .card img{width:100%;height:160px;object-fit:cover;}
-    .card-header{padding:16px;}
-    .card-title{font-size:18px;font-weight:600;color:#fff;}
-    .card-body{padding:0 16px 16px;color:#ddd;flex-grow:1;}
-    .card-footer{text-align:center;padding:12px;color:#a08bff;text-decoration:none;}
-    footer{text-align:center;padding:30px 0;color:#777;font-size:13px;}
+
+    .loader span {
+      width: 20px; height: 20px;
+      margin: 0 5px;
+      border-radius: 50%;
+      background: #f5f5f5;
+      animation: bounce 1.2s cubic-bezier(0.5, 0.05, 0.1, 0.9) infinite;
+    }
+
+    .loader span:nth-child(1) { animation-delay: 0s; }
+    .loader span:nth-child(2) { animation-delay: 0.2s; }
+    .loader span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body data-theme="dark">
-  <div id="loader-page"><div class="loader"><span></span><span></span><span></span></div></div>
+
+  <div id="loader-page">
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
 
   <div class="overlay" id="overlay"></div>
 
@@ -135,52 +148,117 @@
   </header>
 
   <nav class="sidebar" id="sidebar">
+    <h2>Catégories</h2>
     <ul id="categoryList"></ul>
   </nav>
 
   <div class="search-container">
-    <input id="searchBar" class="search-bar" placeholder=" Rechercher une IA...">
+    <input id="searchBar" type="text" class="search-bar" placeholder=" Rechercher une IA">
   </div>
 
-  <!-- ORB SPACE -->
-  <div class="orb-space">
-    <canvas id="orbCanvas" class="orb-canvas"></canvas>
-  </div>
-
-  <main><div id="grid" class="grid"></div></main>
+  <main>
+    <div id="grid" class="grid"></div>
+  </main>
 
   <footer>FlixAI — Découvrez les meilleures IA 🤖</footer>
 
-  <script type="module">
-    // Sidebar + theme
-    const grid=document.getElementById('grid');
-    const sidebar=document.getElementById('sidebar');
-    const overlay=document.getElementById('overlay');
-    const menuBtn=document.getElementById('menuBtn');
-    const themeToggle=document.getElementById('themeToggle');
-    const loaderPage=document.getElementById('loader-page');
-    const categories=["Business","Productivity","Task Automation","Image Generation","Copywriting","SEO","Education","Video","Music","Design","Gaming","Fun","Chatbot","Medical","News","Science","Finance","Crypto","Marketing","Search"];
-    let allData=[],displayedCount=0,batchSize=50,isLoading=false;
-    menuBtn.onclick=()=>{sidebar.classList.toggle("open");overlay.classList.toggle("active");};
-    overlay.onclick=()=>{sidebar.classList.remove("open");overlay.classList.remove("active");};
-    themeToggle.onclick=()=>{const c=document.body.getAttribute("data-theme");if(c==="dark"){document.body.removeAttribute("data-theme");themeToggle.textContent="🌙";}else{document.body.setAttribute("data-theme","dark");themeToggle.textContent="☀️";}};
-    const list=document.getElementById('categoryList');
-    categories.forEach(cat=>{const li=document.createElement("li");li.textContent=cat;li.onclick=()=>filterByKeyword(cat);list.appendChild(li);});
+  <script>
+    const grid = document.getElementById('grid');
+    const categoryList = document.getElementById('categoryList');
+    const searchBar = document.getElementById('searchBar');
+    const loaderPage = document.getElementById('loader-page');
+    const menuBtn = document.getElementById('menuBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+    const themeToggle = document.getElementById('themeToggle');
 
-    function createCard(item){const c=document.createElement("div");c.className="card";const i=document.createElement("div");i.className="card-inner";const img=document.createElement("img");img.src=item.image||"https://via.placeholder.com/300x160";const h=document.createElement("div");h.className="card-header";h.innerHTML=`<h3 class="card-title">${item.handle}</h3>`;const b=document.createElement("div");b.className="card-body";b.textContent=item.description||"";const f=document.createElement("a");f.className="card-footer";f.href=item.website||"#";f.target="_blank";f.textContent="Visiter le site";i.append(img,h,b,f);c.append(i);return c;}
-    function showCards(data,reset=false){if(reset){grid.innerHTML="";displayedCount=0;}const slice=data.slice(displayedCount,displayedCount+batchSize);slice.forEach(it=>grid.appendChild(createCard(it)));displayedCount+=slice.length;}
-    function filterByKeyword(q){if(!q){showCards(allData,true);return;}const res=allData.filter(it=>(it.handle+" "+it.description).toLowerCase().includes(q.toLowerCase()));showCards(res,true);}
-    async function loadData(){try{const r=await fetch("data.json");const d=await r.json();allData=Array.isArray(d)?d:[d];showCards(allData,true);window.addEventListener("scroll",handleScroll);}catch(e){grid.innerHTML="<p style='color:red'>Erreur data.json</p>";}finally{setTimeout(()=>loaderPage.style.display="none",7000);}}
-    function handleScroll(){if(isLoading)return;const y=window.scrollY,v=window.innerHeight,h=document.body.offsetHeight;if(h-(y+v)<800&&displayedCount<allData.length){isLoading=true;setTimeout(()=>{showCards(allData);isLoading=false;},300);}}
+    const categories = ["Business","Productivity","Project Management","Task Automation","Business Plan","Startup Idea","Email Writing","Copywriting","Social Media","Market Analysis","Ad Campaign","SEO","Image Generation"];
+
+    let allData = [];
+    let displayedCount = 0;
+    const batchSize = 50;
+    let isLoadingMore = false;
+
+    menuBtn.addEventListener("click", toggleMenu);
+    overlay.addEventListener("click", closeMenu);
+    themeToggle.addEventListener("click", toggleTheme);
+    searchBar.addEventListener("input", () => filterByKeyword(searchBar.value.trim()));
+
+    function toggleMenu(){ sidebar.classList.toggle("open"); overlay.classList.toggle("active"); menuBtn.classList.toggle("active"); }
+    function closeMenu(){ sidebar.classList.remove("open"); overlay.classList.remove("active"); menuBtn.classList.remove("active"); }
+    function toggleTheme(){ const c=document.body.getAttribute("data-theme"); if(c==="dark"){document.body.removeAttribute("data-theme");themeToggle.textContent="🌙";}else{document.body.setAttribute("data-theme","dark");themeToggle.textContent="☀️";}}
+
+    function renderCategories(){
+      categoryList.innerHTML = "";
+      const allLi = document.createElement("li");
+      allLi.textContent = "Toutes les catégories";
+      allLi.addEventListener("click",()=>{ showCards(allData,true); closeMenu(); });
+      categoryList.appendChild(allLi);
+      categories.forEach(cat=>{
+        const li=document.createElement("li");
+        li.textContent=cat;
+        li.addEventListener("click",()=>{ filterByKeyword(cat); closeMenu(); });
+        categoryList.appendChild(li);
+      });
+    }
+
+    function createCard(item){
+      const card=document.createElement("div"); card.className="card";
+      const img=document.createElement("img"); img.src=item.image||"https://ibb.co/k2RknvYG"; img.alt=item.handle;
+      const header=document.createElement("div"); header.className="card-header"; header.innerHTML=`<h3 class="card-title">${item.handle}</h3><div class="card-meta">${item.id||"?"}</div>`;
+      const body=document.createElement("div"); body.className="card-body"; body.textContent=item.description||"(Pas de description)";
+      const footer=document.createElement("a"); footer.className="card-footer"; footer.href=item.website||"#"; footer.target="_blank"; footer.textContent="Visiter le site";
+      card.append(img,header,body,footer);
+      return card;
+    }
+
+    function showCards(data, reset=false){
+      if(reset){grid.innerHTML="";displayedCount=0;}
+      const slice = data.slice(displayedCount, displayedCount + batchSize);
+      slice.forEach(item => grid.appendChild(createCard(item)));
+      displayedCount += slice.length;
+    }
+
+    function filterByKeyword(query){
+      if(!query){showCards(allData,true);return;}
+      const filtered=allData.filter(item=>(item.handle+" "+item.description).toLowerCase().includes(query.toLowerCase()));
+      showCards(filtered,true);
+    }
+
+    async function loadData(){
+      const startTime = Date.now();
+      try{
+        const res=await fetch("data.json");
+        if(!res.ok) throw new Error("Impossible de charger data.json");
+        const data=await res.json();
+        allData=Array.isArray(data)?data:[data];
+        renderCategories();
+        showCards(allData,true);
+        window.addEventListener("scroll",handleScroll);
+      }catch(err){
+        grid.innerHTML=`<div style="color:#f87171;font-weight:700">Erreur: ${err.message}</div>`;
+      }finally{
+        const elapsed=Date.now()-startTime;
+        const remaining=Math.max(0,10000-elapsed);
+        setTimeout(()=>{loaderPage.style.display="none";},remaining);
+      }
+    }
+
+    function handleScroll(){
+      if(isLoadingMore) return;
+      const scrollY = window.scrollY;
+      const visible = window.innerHeight;
+      const fullHeight = document.body.offsetHeight;
+      if(fullHeight - (scrollY + visible) < 800 && displayedCount < allData.length){
+        isLoadingMore = true;
+        setTimeout(()=>{
+          showCards(allData);
+          isLoadingMore = false;
+        },300);
+      }
+    }
+
     loadData();
-
-    // === ORB GLSL EFFECT ===
-    import { Renderer, Program, Triangle, Vec3, Mesh } from "https://cdn.skypack.dev/ogl";
-    const vert=`precision highp float;attribute vec2 position;attribute vec2 uv;varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,0.,1.);}`;
-    const frag=`precision highp float;uniform float iTime;uniform vec3 iResolution;varying vec2 vUv;void main(){vec2 uv=(vUv-0.5)*2.0;float d=length(uv);float glow=0.02/d;vec3 col=mix(vec3(0.4,0.1,1.0),vec3(0.1,0.6,1.0),sin(iTime*0.5));gl_FragColor=vec4(col*glow,1.0);}`;
-    const container=document.getElementById("orbCanvas");const renderer=new Renderer({canvas:container,alpha:true});const gl=renderer.gl;gl.clearColor(0,0,0,0);const geometry=new Triangle(gl);const program=new Program(gl,{vertex:vert,fragment:frag,uniforms:{iTime:{value:0},iResolution:{value:new Vec3()}}});const mesh=new Mesh(gl,{geometry,program});
-    function resize(){const dpr=window.devicePixelRatio||1;const w=container.clientWidth;const h=container.clientHeight;renderer.setSize(w*dpr,h*dpr);gl.canvas.style.width=w+"px";gl.canvas.style.height=h+"px";program.uniforms.iResolution.value.set(gl.canvas.width,gl.canvas.height,gl.canvas.width/gl.canvas.height);}
-    window.addEventListener("resize",resize);resize();let start=performance.now();function update(t){program.uniforms.iTime.value=(t-start)/1000;renderer.render({scene:mesh});requestAnimationFrame(update);}requestAnimationFrame(update);
   </script>
 </body>
 </html>
